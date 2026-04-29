@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Linux HW Monitor
+Comment=Complete hardware monitor for Linux
+Exec=linux-hw-monitor
+Icon=io.github.usuario.LinuxHWMonitor
+Terminal=false
+Categories=System;Monitor;
+StartupNotify=true

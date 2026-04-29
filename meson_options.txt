@@ -1,0 +1,1 @@
+option('profile', type: 'combo', choices: ['debug', 'release'], value: 'debug')

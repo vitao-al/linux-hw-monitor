@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="io.github.usuario.LinuxHWMonitor" path="/io/github/usuario/LinuxHWMonitor/">
+    <key name="update-interval" type="u">
+      <default>1</default>
+      <summary>Update interval in seconds</summary>
+    </key>
+    <key name="temperature-unit" type="s">
+      <default>'celsius'</default>
+      <summary>Temperature unit</summary>
+    </key>
+    <key name="data-unit" type="s">
+      <default>'si'</default>
+      <summary>Data unit mode</summary>
+    </key>
+    <key name="graph-theme" type="s">
+      <default>'system'</default>
+      <summary>Graph theme</summary>
+    </key>
+    <key name="start-minimized" type="b">
+      <default>false</default>
+      <summary>Start minimized</summary>
+    </key>
+    <key name="critical-notify" type="b">
+      <default>true</default>
+      <summary>Enable critical temperature notifications</summary>
+    </key>
+    <key name="critical-threshold" type="d">
+      <default>90.0</default>
+      <summary>Critical temperature threshold in Celsius</summary>
+    </key>
+  </schema>
+</schemalist>

@@ -1,0 +1,9 @@
+/home/vm74531/Área de trabalho/Workspace code/linux-hw-monitor/target/debug/deps/gtk4_macros-0c12adffb2434dcf.d: /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/lib.rs /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/attribute_parser.rs /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/composite_template_derive.rs /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/template_callbacks_attribute.rs /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/util.rs
+
+/home/vm74531/Área de trabalho/Workspace code/linux-hw-monitor/target/debug/deps/libgtk4_macros-0c12adffb2434dcf.so: /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/lib.rs /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/attribute_parser.rs /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/composite_template_derive.rs /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/template_callbacks_attribute.rs /home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/util.rs
+
+/home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/lib.rs:
+/home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/attribute_parser.rs:
+/home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/composite_template_derive.rs:
+/home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/template_callbacks_attribute.rs:
+/home/vm74531/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk4-macros-0.8.2/src/util.rs:

@@ -1,0 +1,10 @@
+pub mod battery;
+pub mod cpu;
+pub mod fans;
+pub mod gpu;
+pub mod manager;
+pub mod memory;
+pub mod motherboard;
+pub mod network;
+pub mod storage;
+pub mod types;

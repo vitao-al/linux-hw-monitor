@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.usuario.LinuxHWMonitor</id>
+  <name>Linux HW Monitor</name>
+  <summary>Complete hardware monitor for Linux</summary>
+  <description>
+    <p>Monitor hardware sensors in real time: temperature, voltage, clocks, CPU and GPU usage, storage and battery health.</p>
+    <p>A native Linux monitor inspired by HWMonitor and HWiNFO, built with GTK4 and Libadwaita.</p>
+  </description>
+  <categories>
+    <category>System</category>
+    <category>Monitor</category>
+  </categories>
+  <url type="homepage">https://github.com/usuario/linux-hw-monitor</url>
+  <releases>
+    <release version="1.0.0" date="2026-04-26"/>
+  </releases>
+  <content_rating type="oars-1.1"/>
+</component>

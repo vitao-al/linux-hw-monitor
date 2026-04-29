@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="LinuxHWMonitorWindow" parent="AdwApplicationWindow">
+    <property name="default-width">1100</property>
+    <property name="default-height">720</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="title-widget">
+              <object class="GtkLabel">
+                <property name="label">Hardware Monitor</property>
+                <property name="css-classes">title-1</property>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

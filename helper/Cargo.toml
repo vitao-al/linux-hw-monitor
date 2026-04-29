@@ -1,0 +1,9 @@
+[package]
+name = "linux-hw-monitor-helper"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+serde_json = "1"
+zbus = "4"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "process"] }
