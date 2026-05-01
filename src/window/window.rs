@@ -10,6 +10,9 @@ use crate::sensors::types::{SensorData, SensorValue};
 use crate::ui::gauge_widget::GaugeWidget;
 use crate::ui::graph_widget::build_graph_widget;
 use crate::window::actions::install_actions;
+
+/// Per-group sidebar entry: (id, label, visible).
+type SidebarPrefs = Vec<(String, String, bool)>;
 use crate::window::cpu_overview::rebuild_cpu_overview;
 use crate::window::formatting::{extract_group_percent, format_sidebar_value};
 use crate::window::icons::{best_icon_name, preferred_icon_for_group};
@@ -145,8 +148,19 @@ impl MainWindow {
             .content(&toolbar)
             .build();
 
+        // Sidebar customization state: None = natural order, all visible.
+        // Each entry: (group_id, group_label, visible).
+        let sidebar_prefs: Rc<RefCell<Option<SidebarPrefs>>> =
+            Rc::new(RefCell::new(None));
+        // Last-known group list so the preferences dialog can list groups even
+        // before the user opens it.
+        let last_groups: Rc<RefCell<Vec<(String, String)>>> =
+            Rc::new(RefCell::new(vec![]));
+
         let style_manager = adw::StyleManager::default();
         let pref_parent = window.clone();
+        let sidebar_prefs_pref = Rc::clone(&sidebar_prefs);
+        let last_groups_pref = Rc::clone(&last_groups);
         pref_btn.connect_clicked(move |_| {
             let pref = adw::PreferencesWindow::new();
             pref.set_title(Some("Preferences"));
@@ -199,6 +213,163 @@ impl MainWindow {
             group.add(&theme);
             page.add(&group);
             pref.add(&page);
+
+            // ── Sidebar page ──────────────────────────────────────────────
+            let sidebar_page = adw::PreferencesPage::builder()
+                .title("Sidebar")
+                .icon_name("view-list-symbolic")
+                .build();
+
+            let sidebar_group = adw::PreferencesGroup::builder()
+                .title("Sidebar buttons")
+                .description("Choose which categories appear in the sidebar and their order.")
+                .build();
+
+            // Snapshot the current prefs (or build from last_groups if not set).
+            let current_entries: SidebarPrefs = {
+                let prefs_guard = sidebar_prefs_pref.borrow();
+                if let Some(entries) = prefs_guard.as_ref() {
+                    entries.clone()
+                } else {
+                    last_groups_pref
+                        .borrow()
+                        .iter()
+                        .map(|(id, label)| (id.clone(), label.clone(), true))
+                        .collect()
+                }
+            };
+
+            // Working copy inside the dialog (Rc so buttons can share it).
+            let working: Rc<RefCell<SidebarPrefs>> =
+                Rc::new(RefCell::new(current_entries));
+
+            // ListBox to display editable rows.
+            let entry_list = gtk::ListBox::new();
+            entry_list.add_css_class("boxed-list");
+            entry_list.set_selection_mode(gtk::SelectionMode::None);
+
+            // Helper: rebuild the entry_list from the working copy.
+            fn repopulate_entry_list(
+                entry_list: &gtk::ListBox,
+                working: &Rc<RefCell<SidebarPrefs>>,
+                sidebar_prefs: &Rc<RefCell<Option<SidebarPrefs>>>,
+            ) {
+                while let Some(child) = entry_list.first_child() {
+                    entry_list.remove(&child);
+                }
+                let entries = working.borrow();
+                let n = entries.len();
+                for (idx, (id, label, visible)) in entries.iter().enumerate() {
+                    let row_box = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+                    row_box.set_margin_top(4);
+                    row_box.set_margin_bottom(4);
+                    row_box.set_margin_start(8);
+                    row_box.set_margin_end(8);
+
+                    // Visibility toggle.
+                    let toggle = gtk::Switch::new();
+                    toggle.set_active(*visible);
+                    toggle.set_valign(gtk::Align::Center);
+
+                    let lbl = gtk::Label::new(Some(label));
+                    lbl.set_hexpand(true);
+                    lbl.set_xalign(0.0);
+
+                    // Up / down buttons.
+                    let up_btn = gtk::Button::from_icon_name("go-up-symbolic");
+                    up_btn.set_sensitive(idx > 0);
+                    up_btn.add_css_class("flat");
+                    up_btn.set_valign(gtk::Align::Center);
+
+                    let down_btn = gtk::Button::from_icon_name("go-down-symbolic");
+                    down_btn.set_sensitive(idx + 1 < n);
+                    down_btn.add_css_class("flat");
+                    down_btn.set_valign(gtk::Align::Center);
+
+                    row_box.append(&toggle);
+                    row_box.append(&lbl);
+                    row_box.append(&up_btn);
+                    row_box.append(&down_btn);
+
+                    let row = gtk::ListBoxRow::new();
+                    row.set_child(Some(&row_box));
+                    entry_list.append(&row);
+
+                    // Wire toggle.
+                    let id_clone = id.clone();
+                    let working_t = Rc::clone(working);
+                    let prefs_t = Rc::clone(sidebar_prefs);
+                    toggle.connect_active_notify(move |sw| {
+                        let mut w = working_t.borrow_mut();
+                        if let Some(e) = w.iter_mut().find(|(eid, _, _)| eid == &id_clone) {
+                            e.2 = sw.is_active();
+                        }
+                        *prefs_t.borrow_mut() = Some(w.clone());
+                    });
+
+                    // Wire up button.
+                    let working_u = Rc::clone(working);
+                    let prefs_u = Rc::clone(sidebar_prefs);
+                    let list_u = entry_list.clone();
+                    let w2 = Rc::clone(working);
+                    let p2 = Rc::clone(sidebar_prefs);
+                    up_btn.connect_clicked(move |_| {
+                        let mut entries = working_u.borrow_mut();
+                        if idx > 0 {
+                            entries.swap(idx, idx - 1);
+                            *prefs_u.borrow_mut() = Some(entries.clone());
+                        }
+                        drop(entries);
+                        repopulate_entry_list(&list_u, &w2, &p2);
+                    });
+
+                    // Wire down button.
+                    let working_d = Rc::clone(working);
+                    let prefs_d = Rc::clone(sidebar_prefs);
+                    let list_d = entry_list.clone();
+                    let w3 = Rc::clone(working);
+                    let p3 = Rc::clone(sidebar_prefs);
+                    down_btn.connect_clicked(move |_| {
+                        let mut entries = working_d.borrow_mut();
+                        if idx + 1 < n {
+                            entries.swap(idx, idx + 1);
+                            *prefs_d.borrow_mut() = Some(entries.clone());
+                        }
+                        drop(entries);
+                        repopulate_entry_list(&list_d, &w3, &p3);
+                    });
+                }
+            }
+
+            repopulate_entry_list(&entry_list, &working, &sidebar_prefs_pref);
+
+            // "Reset to defaults" button clears the custom prefs.
+            let reset_btn = gtk::Button::builder()
+                .label("Reset to Defaults")
+                .css_classes(["destructive-action"])
+                .halign(gtk::Align::End)
+                .build();
+            let prefs_reset = Rc::clone(&sidebar_prefs_pref);
+            let working_reset = Rc::clone(&working);
+            let list_reset = entry_list.clone();
+            let last_groups_reset = Rc::clone(&last_groups_pref);
+            let prefs_reset2 = Rc::clone(&sidebar_prefs_pref);
+            reset_btn.connect_clicked(move |_| {
+                *prefs_reset.borrow_mut() = None;
+                let defaults: SidebarPrefs = last_groups_reset
+                    .borrow()
+                    .iter()
+                    .map(|(id, label)| (id.clone(), label.clone(), true))
+                    .collect();
+                *working_reset.borrow_mut() = defaults;
+                repopulate_entry_list(&list_reset, &working_reset, &prefs_reset2);
+            });
+
+            sidebar_group.add(&entry_list);
+            sidebar_group.set_header_suffix(Some(&reset_btn));
+            sidebar_page.add(&sidebar_group);
+            pref.add(&sidebar_page);
+
             pref.present();
         });
 
@@ -242,6 +413,8 @@ impl MainWindow {
         let services_summary_ref = services_summary.clone();
         let refresh_tick = Rc::new(Cell::new(0u32));
         let refresh_tick_ref = Rc::clone(&refresh_tick);
+        let sidebar_prefs_ref = Rc::clone(&sidebar_prefs);
+        let last_groups_ref = Rc::clone(&last_groups);
 
         rebuild_apps_list(&apps_list, &apps_summary);
         rebuild_services_list(&services_list, &services_summary);
@@ -249,7 +422,14 @@ impl MainWindow {
         glib::timeout_add_seconds_local(1, move || {
             let data = manager_rx.borrow().borrow().clone();
             let selected = selected_ref.borrow().clone();
-            rebuild_sidebar(&categories_ref, &data, &selected);
+
+            // Keep last_groups in sync so the preferences dialog has labels.
+            {
+                let mut lg = last_groups_ref.borrow_mut();
+                *lg = data.groups.iter().map(|g| (g.id.clone(), g.label.clone())).collect();
+            }
+
+            rebuild_sidebar(&categories_ref, &data, &selected, &sidebar_prefs_ref);
             rebuild_content(&content_ref, &data, &selected);
             rebuild_cpu_overview(&cpu_overview_ref, &data);
             cpu_gauge_ref.set_value_percent(extract_group_percent(&data, "cpu"));
@@ -273,14 +453,34 @@ impl MainWindow {
     }
 }
 
-fn rebuild_sidebar(list: &gtk::ListBox, data: &SensorData, selected: &str) {
+fn rebuild_sidebar(
+    list: &gtk::ListBox,
+    data: &SensorData,
+    selected: &str,
+    prefs: &Rc<RefCell<Option<SidebarPrefs>>>,
+) {
     while let Some(child) = list.first_child() {
         list.remove(&child);
     }
 
+    // Build the ordered, filtered group list.
+    let ordered_groups: Vec<_> = {
+        let prefs_borrow = prefs.borrow();
+        if let Some(entries) = prefs_borrow.as_ref() {
+            // Use the user-defined order; skip hidden groups.
+            entries
+                .iter()
+                .filter(|(_, _, visible)| *visible)
+                .filter_map(|(id, _, _)| data.groups.iter().find(|g| &g.id == id))
+                .collect()
+        } else {
+            data.groups.iter().collect()
+        }
+    };
+
     let mut selected_row: Option<gtk::ListBoxRow> = None;
 
-    for group in &data.groups {
+    for group in ordered_groups {
         let row = gtk::ListBoxRow::new();
         row.set_widget_name(&format!("row-{}", group.id));
 
@@ -295,12 +495,6 @@ fn rebuild_sidebar(list: &gtk::ListBox, data: &SensorData, selected: &str) {
         icon.set_pixel_size(16);
         icon.set_opacity(0.9);
 
-        let history = group
-            .sensors
-            .first()
-            .map(|s| s.history.iter().copied().collect::<Vec<_>>())
-            .unwrap_or_default();
-        let sparkline = build_graph_widget(&history, 76, 32);
         let label = gtk::Label::new(Some(&group.label));
         label.set_hexpand(true);
         label.set_xalign(0.0);
@@ -314,7 +508,6 @@ fn rebuild_sidebar(list: &gtk::ListBox, data: &SensorData, selected: &str) {
         value.add_css_class("dim-label");
 
         line.append(&icon);
-        line.append(&sparkline);
         line.append(&label);
         line.append(&value);
         row.set_child(Some(&line));
