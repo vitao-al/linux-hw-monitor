@@ -3,7 +3,7 @@ Title: Add io.github.usuario.LinuxHWMonitor
 This PR adds Linux HW Monitor, a GTK4/libadwaita hardware monitor for Linux.
 
 Upstream: https://github.com/vitao-al/linux-hw-monitor
-License: MIT
+License: GPL-3.0-or-later
 Current release: v1.0.0
 
 Features:
