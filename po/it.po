@@ -1,0 +1,276 @@
+# Italian translation for Linux HW Monitor
+msgid ""
+msgstr ""
+"Project-Id-Version: linux-hw-monitor 1.0\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Sensors"
+msgstr "Sensori"
+
+msgid "Details"
+msgstr "Dettagli"
+
+msgid "Performance"
+msgstr "Prestazioni"
+
+msgid "Apps"
+msgstr "Applicazioni"
+
+msgid "Services"
+msgstr "Servizi"
+
+msgid "Stress Test"
+msgstr "Test di Stress"
+
+msgid "Preferences"
+msgstr "Preferenze"
+
+msgid "About"
+msgstr "Informazioni"
+
+msgid "Export data"
+msgstr "Esporta dati"
+
+msgid "Export CSV"
+msgstr "Esporta CSV"
+
+msgid "Export JSON"
+msgstr "Esporta JSON"
+
+msgid "Export Text"
+msgstr "Esporta Testo"
+
+msgid "General"
+msgstr "Generale"
+
+msgid "Update interval"
+msgstr "Intervallo di aggiornamento"
+
+msgid "Temperature unit"
+msgstr "Unità di temperatura"
+
+msgid "Celsius"
+msgstr "Celsius"
+
+msgid "Fahrenheit"
+msgstr "Fahrenheit"
+
+msgid "Data unit"
+msgstr "Unità dati"
+
+msgid "Critical temperature notifications"
+msgstr "Notifiche di temperatura critica"
+
+msgid "Theme"
+msgstr "Tema"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Light"
+msgstr "Chiaro"
+
+msgid "Dark"
+msgstr "Scuro"
+
+msgid "Sidebar"
+msgstr "Barra laterale"
+
+msgid "Sidebar buttons"
+msgstr "Pulsanti della barra laterale"
+
+msgid "Choose which categories appear in the sidebar and their order."
+msgstr "Scegli quali categorie appaiono nella barra laterale e il loro ordine."
+
+msgid "Reset to Defaults"
+msgstr "Ripristina i valori predefiniti"
+
+msgid "sensors"
+msgstr "sensori"
+
+msgid "Linux HW Monitor"
+msgstr "Linux HW Monitor"
+
+msgid "Test Method"
+msgstr "Metodo di test"
+
+msgid "Choose the component and stress algorithm. The badge shows the intensity level."
+msgstr "Scegli il componente e l'algoritmo di stress. Il badge mostra il livello di intensità."
+
+msgid "Safety Watchdog"
+msgstr "Watchdog di sicurezza"
+
+msgid "Stress process is killed (SIGKILL) if temperature exceeds the limit."
+msgstr "Il processo di stress viene terminato (SIGKILL) se la temperatura supera il limite."
+
+msgid "Temperature limit (°C)"
+msgstr "Limite di temperatura (°C)"
+
+msgid "Live Status"
+msgstr "Stato in tempo reale"
+
+msgid "CPU Temperature"
+msgstr "Temperatura CPU"
+
+msgid "GPU Temperature"
+msgstr "Temperatura GPU"
+
+msgid "Elapsed"
+msgstr "Tempo trascorso"
+
+msgid "Status"
+msgstr "Stato"
+
+msgid "Idle"
+msgstr "Inattivo"
+
+msgid "Running…"
+msgstr "In esecuzione…"
+
+msgid "Start Stress Test"
+msgstr "Avvia test di stress"
+
+msgid "Stop"
+msgstr "Ferma"
+
+msgid "Last Session Report"
+msgstr "Report ultima sessione"
+
+msgid "Peak CPU Temp"
+msgstr "Temp. max CPU"
+
+msgid "Peak GPU Temp"
+msgstr "Temp. max GPU"
+
+msgid "Thermal Throttling"
+msgstr "Limitazione termica"
+
+msgid "Energy Consumed"
+msgstr "Energia consumata"
+
+msgid "Average Power"
+msgstr "Potenza media"
+
+msgid "Duration"
+msgstr "Durata"
+
+msgid "Matrix Product"
+msgstr "Prodotto matriciale"
+
+msgid "Pi Calculation"
+msgstr "Calcolo di Pi"
+
+msgid "AVX / FPU"
+msgstr "AVX / FPU"
+
+msgid "Pattern Write"
+msgstr "Scrittura pattern"
+
+msgid "Stress-NG VM"
+msgstr "Stress-NG VM"
+
+msgid "GLmark2 Nodes"
+msgstr "Nodi GLmark2"
+
+msgid "Tessellation"
+msgstr "Tassellazione"
+
+msgid "Sequential R/W"
+msgstr "Lettura/Scrittura sequenziale"
+
+msgid "Random IOPS"
+msgstr "IOPS casuali"
+
+msgid "Low / Med"
+msgstr "Basso / Medio"
+
+msgid "Medium"
+msgstr "Medio"
+
+msgid "Extreme"
+msgstr "Estremo"
+
+msgid "Low"
+msgstr "Basso"
+
+msgid "High"
+msgstr "Alto"
+
+msgid "Cannot Start Stress Test"
+msgstr "Impossibile avviare il test di stress"
+
+msgid "A stress test is already running."
+msgstr "Un test di stress è già in esecuzione."
+
+msgid "Insufficient free RAM. Need at least 512 MB to safely run a memory stress test."
+msgstr "RAM libera insufficiente. Servono almeno 512 MB per eseguire in sicurezza un test di stress della memoria."
+
+msgid "Required tool is not installed. Please install it via your package manager."
+msgstr "Lo strumento richiesto non è installato. Installarlo tramite il gestore pacchetti."
+
+msgid "Idle (stopped manually)"
+msgstr "Inattivo (fermato manualmente)"
+
+msgid "Idle (watchdog: temperature limit reached)"
+msgstr "Inattivo (watchdog: limite di temperatura raggiunto)"
+
+msgid "Idle (process exited)"
+msgstr "Inattivo (processo terminato)"
+
+msgid "⚠ Throttling detected"
+msgstr "⚠ Limitazione termica rilevata"
+
+msgid "No throttling"
+msgstr "Nessuna limitazione termica"
+
+msgid "N/A (RAPL not available)"
+msgstr "N/D (RAPL non disponibile)"
+
+msgid "N/A"
+msgstr "N/D"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Processes"
+msgstr "Processi"
+
+msgid "Loading..."
+msgstr "Caricamento..."
+
+msgid "Filter by name or user..."
+msgstr "Filtra per nome o utente..."
+
+msgid "Kill user processes"
+msgstr "Termina processi utente"
+
+msgid "Terminates user processes (does not touch system processes)"
+msgstr "Termina i processi utente (non tocca i processi di sistema)"
+
+msgid "Refresh now"
+msgstr "Aggiorna ora"
+
+msgid "Terminate"
+msgstr "Termina"
+
+msgid "Force Kill"
+msgstr "Forza chiusura"
+
+msgid "Send SIGTERM to process"
+msgstr "Invia SIGTERM al processo"
+
+msgid "Send SIGKILL (immediate force)"
+msgstr "Invia SIGKILL (forza immediata)"
+
+msgid "Filter by name or description..."
+msgstr "Filtra per nome o descrizione..."
+
+msgid "Stop user services"
+msgstr "Ferma servizi utente"
+
+msgid "Stops only the current user's services"
+msgstr "Ferma solo i servizi dell'utente corrente"

@@ -57,4 +57,8 @@ install_data('data/io.github.usuario.LinuxHWMonitor.policy', install_dir: get_op
 install_data('data/icons/hicolor/scalable/apps/io.github.usuario.LinuxHWMonitor.svg', install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps')
 install_data('data/icons/hicolor/symbolic/apps/io.github.usuario.LinuxHWMonitor-symbolic.svg', install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'symbolic' / 'apps')
 
+# ── Translations ──────────────────────────────────────────────────────────────
+i18n = import('i18n')
+subdir('po')
+
 meson.add_install_script('build-aux/meson/postinstall.py')

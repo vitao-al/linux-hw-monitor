@@ -7,6 +7,7 @@ use gtk4 as gtk;
 use glib;
 
 use crate::window::icons::{app_icon_for_process, service_icon_for_unit};
+use crate::i18n::t;
 
 // ─────────────────────────────────────────────────────────────
 //  Data types
@@ -88,11 +89,11 @@ pub(crate) fn build_apps_page() -> (gtk::ListBox, gtk::Label, gtk::Box) {
 
     // title + summary
     let header_row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-    let title = gtk::Label::new(Some("Processos"));
+    let title = gtk::Label::new(Some(&t("Processes")));
     title.set_xalign(0.0);
     title.add_css_class("title-2");
     title.set_hexpand(true);
-    let summary = gtk::Label::new(Some("Carregando..."));
+    let summary = gtk::Label::new(Some(&t("Loading...")));
     summary.add_css_class("dim-label");
     summary.set_xalign(1.0);
     header_row.append(&title);
@@ -100,7 +101,7 @@ pub(crate) fn build_apps_page() -> (gtk::ListBox, gtk::Label, gtk::Box) {
 
     // search bar
     let search = gtk::SearchEntry::new();
-    search.set_placeholder_text(Some("Filtrar por nome ou usuario..."));
+    search.set_placeholder_text(Some(&t("Filter by name or user...")));
     search.set_hexpand(true);
     search.set_margin_top(6);
     search.set_margin_bottom(2);
@@ -110,14 +111,14 @@ pub(crate) fn build_apps_page() -> (gtk::ListBox, gtk::Label, gtk::Box) {
     action_row.set_margin_top(4);
     action_row.set_margin_bottom(6);
     let kill_user_btn = gtk::Button::builder()
-        .label("Encerrar processos do usuario")
-        .tooltip_text("Encerra processos de usuario (nao toca em processos do sistema)")
+        .label(&t("Kill user processes"))
+        .tooltip_text(&t("Terminates user processes (does not touch system processes)"))
         .css_classes(["destructive-action"])
         .build();
     let spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
     spacer.set_hexpand(true);
     let refresh_btn = gtk::Button::from_icon_name("view-refresh-symbolic");
-    refresh_btn.set_tooltip_text(Some("Atualizar agora"));
+    refresh_btn.set_tooltip_text(Some(&t("Refresh now")));
     action_row.append(&kill_user_btn);
     action_row.append(&spacer);
     action_row.append(&refresh_btn);
@@ -397,14 +398,14 @@ fn build_app_row(
     let btn_box = gtk::Box::new(gtk::Orientation::Horizontal, 4);
     btn_box.set_margin_start(8);
     let kill_btn = gtk::Button::builder()
-        .label("Encerrar")
+        .label(&t("Terminate"))
         .css_classes(["destructive-action", "pill"])
-        .tooltip_text("Enviar SIGTERM ao processo")
+        .tooltip_text(&t("Send SIGTERM to process"))
         .build();
     let force_btn = gtk::Button::builder()
-        .label("Forcar")
+        .label(&t("Force Kill"))
         .css_classes(["pill"])
-        .tooltip_text("Enviar SIGKILL (forca imediata)")
+        .tooltip_text(&t("Send SIGKILL (immediate force)"))
         .build();
     btn_box.append(&kill_btn);
     btn_box.append(&force_btn);
@@ -493,11 +494,11 @@ pub(crate) fn build_services_page() -> (gtk::ListBox, gtk::Label, gtk::Box) {
 
     // title + summary
     let header_row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-    let title = gtk::Label::new(Some("Servicos"));
+    let title = gtk::Label::new(Some(&t("Services")));
     title.set_xalign(0.0);
     title.add_css_class("title-2");
     title.set_hexpand(true);
-    let summary = gtk::Label::new(Some("Carregando..."));
+    let summary = gtk::Label::new(Some(&t("Loading...")));
     summary.add_css_class("dim-label");
     header_row.append(&title);
     header_row.append(&summary);
@@ -507,7 +508,7 @@ pub(crate) fn build_services_page() -> (gtk::ListBox, gtk::Label, gtk::Box) {
     filter_row.set_margin_top(6);
     filter_row.set_margin_bottom(2);
     let search = gtk::SearchEntry::new();
-    search.set_placeholder_text(Some("Filtrar por nome ou descricao..."));
+    search.set_placeholder_text(Some(&t("Filter by name or description...")));
     search.set_hexpand(true);
     let show_all_btn = gtk::ToggleButton::builder()
         .label("Mostrar todos")
@@ -521,14 +522,14 @@ pub(crate) fn build_services_page() -> (gtk::ListBox, gtk::Label, gtk::Box) {
     action_row.set_margin_top(4);
     action_row.set_margin_bottom(6);
     let stop_user_btn = gtk::Button::builder()
-        .label("Parar servicos do usuario")
-        .tooltip_text("Para apenas servicos do usuario atual")
+        .label(&t("Stop user services"))
+        .tooltip_text(&t("Stops only the current user's services"))
         .css_classes(["destructive-action"])
         .build();
     let spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
     spacer.set_hexpand(true);
     let refresh_btn = gtk::Button::from_icon_name("view-refresh-symbolic");
-    refresh_btn.set_tooltip_text(Some("Atualizar agora"));
+    refresh_btn.set_tooltip_text(Some(&t("Refresh now")));
     action_row.append(&stop_user_btn);
     action_row.append(&spacer);
     action_row.append(&refresh_btn);
@@ -641,11 +642,11 @@ fn build_svc_column_header() -> gtk::Box {
     row.set_margin_bottom(2);
 
     let cols: &[(&str, bool, i32)] = &[
-        ("Servico",    true,  0),
-        ("Status",     false, 85),
-        ("Sub-estado", false, 95),
-        ("Descricao",  true,  0),
-        ("Acoes",      false, 200),
+        ("Service",     true,  0),
+        ("Status",      false, 85),
+        ("Sub-state",   false, 95),
+        ("Description", true,  0),
+        ("Actions",     false, 200),
     ];
 
     for (label, expand, min_w) in cols {
@@ -679,10 +680,10 @@ fn wire_svc_sort_buttons(
     summary: gtk::Label,
 ) {
     let names: &[(&str, SvcColumn)] = &[
-        ("Servico",    SvcColumn::Unit),
-        ("Status",     SvcColumn::Status),
-        ("Sub-estado", SvcColumn::Sub),
-        ("Descricao",  SvcColumn::Description),
+        ("Service",     SvcColumn::Unit),
+        ("Status",      SvcColumn::Status),
+        ("Sub-state",   SvcColumn::Sub),
+        ("Description", SvcColumn::Description),
     ];
 
     let mut child = col_header.first_child();
@@ -1015,10 +1016,10 @@ fn kill_process_signal(pid: u32, signal: &str) -> String {
                     .map(|s| s.success())
                     .unwrap_or(false);
                 if ok {
-                    return format!("PID {} encerrado com admin ({})", pid, signal);
+                    return format!("PID {} terminated with admin ({})", pid, signal);
                 }
             }
-            format!("Falha ao encerrar PID {} (permissao negada?)", pid)
+            format!("Failed to terminate PID {} (permission denied?)", pid)
         }
     }
 }
@@ -1037,7 +1038,7 @@ fn kill_all_user_processes() -> String {
         .arg("-c")
         .arg(format!("ps -u '{}' -o pid,comm --no-headers", my_user))
         .output();
-    let Ok(out) = out else { return "Falha ao listar processos".into(); };
+    let Ok(out) = out else { return "Failed to list processes".into(); };
 
     let text = String::from_utf8_lossy(&out.stdout);
     let mut killed = 0u32;
@@ -1054,7 +1055,7 @@ fn kill_all_user_processes() -> String {
         let _ = Command::new("/bin/kill").arg("-TERM").arg(pid.to_string()).status();
         killed += 1;
     }
-    format!("{} processos encerrados, {} protegidos/ignorados", killed, skipped)
+    format!("{} processes terminated, {} protected/skipped", killed, skipped)
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1088,9 +1089,9 @@ fn run_systemctl_action(unit: &str, action: &str, is_user: bool) -> String {
                     }
                 }
             }
-            format!("Falha: {}", err.trim())
+            format!("Failed: {}", err.trim())
         }
-        Err(e) => format!("Erro: {}", e),
+        Err(e) => format!("Error: {}", e),
     }
 }
 
@@ -1103,7 +1104,7 @@ fn stop_all_user_services() -> String {
         .arg("-c")
         .arg("systemctl --user list-units --type=service --state=running --no-legend --no-pager --plain")
         .output();
-    let Ok(out) = out else { return "Falha ao listar servicos do usuario".into(); };
+    let Ok(out) = out else { return "Failed to list user services".into(); };
     let text = String::from_utf8_lossy(&out.stdout);
     let mut stopped = 0u32;
     for line in text.lines() {

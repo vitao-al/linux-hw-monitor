@@ -1,0 +1,4 @@
+src/window/window.rs
+src/window/stress.rs
+src/window/processes.rs
+src/window/actions.rs

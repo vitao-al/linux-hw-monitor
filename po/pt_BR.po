@@ -1,0 +1,284 @@
+# Brazilian Portuguese translation for Linux HW Monitor
+# Copyright (C) 2024 Linux HW Monitor Contributors
+# This file is distributed under the same license as the linux-hw-monitor package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: linux-hw-monitor 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/usuario/linux-hw-monitor/issues\n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: Linux HW Monitor Contributors\n"
+"Language-Team: Brazilian Portuguese\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Sensors"
+msgstr "Sensores"
+
+msgid "Details"
+msgstr "Detalhes"
+
+msgid "Performance"
+msgstr "Desempenho"
+
+msgid "Apps"
+msgstr "Aplicativos"
+
+msgid "Services"
+msgstr "Serviços"
+
+msgid "Stress Test"
+msgstr "Teste de Estresse"
+
+msgid "Preferences"
+msgstr "Preferências"
+
+msgid "About"
+msgstr "Sobre"
+
+msgid "Export data"
+msgstr "Exportar dados"
+
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+msgid "Export JSON"
+msgstr "Exportar JSON"
+
+msgid "Export Text"
+msgstr "Exportar Texto"
+
+msgid "General"
+msgstr "Geral"
+
+msgid "Update interval"
+msgstr "Intervalo de atualização"
+
+msgid "Temperature unit"
+msgstr "Unidade de temperatura"
+
+msgid "Celsius"
+msgstr "Celsius"
+
+msgid "Fahrenheit"
+msgstr "Fahrenheit"
+
+msgid "Data unit"
+msgstr "Unidade de dados"
+
+msgid "Critical temperature notifications"
+msgstr "Notificações de temperatura crítica"
+
+msgid "Theme"
+msgstr "Tema"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "Dark"
+msgstr "Escuro"
+
+msgid "Sidebar"
+msgstr "Barra lateral"
+
+msgid "Sidebar buttons"
+msgstr "Botões da barra lateral"
+
+msgid "Choose which categories appear in the sidebar and their order."
+msgstr "Escolha quais categorias aparecem na barra lateral e sua ordem."
+
+msgid "Reset to Defaults"
+msgstr "Restaurar Padrões"
+
+msgid "sensors"
+msgstr "sensores"
+
+msgid "Linux HW Monitor"
+msgstr "Linux HW Monitor"
+
+msgid "Test Method"
+msgstr "Método de Teste"
+
+msgid "Choose the component and stress algorithm. The badge shows the intensity level."
+msgstr "Escolha o componente e o algoritmo de estresse. O emblema mostra o nível de intensidade."
+
+msgid "Safety Watchdog"
+msgstr "Vigilante de Segurança"
+
+msgid "Stress process is killed (SIGKILL) if temperature exceeds the limit."
+msgstr "O processo de estresse é encerrado (SIGKILL) se a temperatura exceder o limite."
+
+msgid "Temperature limit (°C)"
+msgstr "Limite de temperatura (°C)"
+
+msgid "Live Status"
+msgstr "Status em Tempo Real"
+
+msgid "CPU Temperature"
+msgstr "Temperatura da CPU"
+
+msgid "GPU Temperature"
+msgstr "Temperatura da GPU"
+
+msgid "Elapsed"
+msgstr "Tempo decorrido"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Idle"
+msgstr "Ocioso"
+
+msgid "Running…"
+msgstr "Executando…"
+
+msgid "Start Stress Test"
+msgstr "Iniciar Teste de Estresse"
+
+msgid "Stop"
+msgstr "Parar"
+
+msgid "Last Session Report"
+msgstr "Relatório da Última Sessão"
+
+msgid "Peak CPU Temp"
+msgstr "Pico de Temperatura da CPU"
+
+msgid "Peak GPU Temp"
+msgstr "Pico de Temperatura da GPU"
+
+msgid "Thermal Throttling"
+msgstr "Limitação Térmica"
+
+msgid "Energy Consumed"
+msgstr "Energia Consumida"
+
+msgid "Average Power"
+msgstr "Potência Média"
+
+msgid "Duration"
+msgstr "Duração"
+
+msgid "Matrix Product"
+msgstr "Produto de Matriz"
+
+msgid "Pi Calculation"
+msgstr "Cálculo de Pi"
+
+msgid "AVX / FPU"
+msgstr "AVX / FPU"
+
+msgid "Pattern Write"
+msgstr "Escrita de Padrão"
+
+msgid "Stress-NG VM"
+msgstr "Stress-NG VM"
+
+msgid "GLmark2 Nodes"
+msgstr "Nós GLmark2"
+
+msgid "Tessellation"
+msgstr "Tesselação"
+
+msgid "Sequential R/W"
+msgstr "Leitura/Escrita Sequencial"
+
+msgid "Random IOPS"
+msgstr "IOPS Aleatório"
+
+msgid "Low / Med"
+msgstr "Baixo / Médio"
+
+msgid "Medium"
+msgstr "Médio"
+
+msgid "Extreme"
+msgstr "Extremo"
+
+msgid "Low"
+msgstr "Baixo"
+
+msgid "High"
+msgstr "Alto"
+
+msgid "Cannot Start Stress Test"
+msgstr "Não é possível iniciar o teste de estresse"
+
+msgid "A stress test is already running."
+msgstr "Um teste de estresse já está em execução."
+
+msgid "Insufficient free RAM. Need at least 512 MB to safely run a memory stress test."
+msgstr "RAM livre insuficiente. São necessários pelo menos 512 MB para executar com segurança um teste de estresse de memória."
+
+msgid "Required tool is not installed. Please install it via your package manager."
+msgstr "Ferramenta necessária não está instalada. Instale-a via gerenciador de pacotes."
+
+msgid "Idle (stopped manually)"
+msgstr "Ocioso (parado manualmente)"
+
+msgid "Idle (watchdog: temperature limit reached)"
+msgstr "Ocioso (vigilante: limite de temperatura atingido)"
+
+msgid "Idle (process exited)"
+msgstr "Ocioso (processo encerrado)"
+
+msgid "⚠ Throttling detected"
+msgstr "⚠ Limitação térmica detectada"
+
+msgid "No throttling"
+msgstr "Sem limitação térmica"
+
+msgid "N/A (RAPL not available)"
+msgstr "N/D (RAPL não disponível)"
+
+msgid "N/A"
+msgstr "N/D"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Processes"
+msgstr "Processos"
+
+msgid "Loading..."
+msgstr "Carregando..."
+
+msgid "Filter by name or user..."
+msgstr "Filtrar por nome ou usuário..."
+
+msgid "Kill user processes"
+msgstr "Encerrar processos do usuário"
+
+msgid "Terminates user processes (does not touch system processes)"
+msgstr "Encerra processos do usuário (não toca processos do sistema)"
+
+msgid "Refresh now"
+msgstr "Atualizar agora"
+
+msgid "Terminate"
+msgstr "Encerrar"
+
+msgid "Force Kill"
+msgstr "Forçar Encerramento"
+
+msgid "Send SIGTERM to process"
+msgstr "Enviar SIGTERM ao processo"
+
+msgid "Send SIGKILL (immediate force)"
+msgstr "Enviar SIGKILL (força imediata)"
+
+msgid "Filter by name or description..."
+msgstr "Filtrar por nome ou descrição..."
+
+msgid "Stop user services"
+msgstr "Parar serviços do usuário"
+
+msgid "Stops only the current user's services"
+msgstr "Para apenas os serviços do usuário atual"

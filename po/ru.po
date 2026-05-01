@@ -1,0 +1,276 @@
+# Russian translation for Linux HW Monitor
+msgid ""
+msgstr ""
+"Project-Id-Version: linux-hw-monitor 1.0\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Sensors"
+msgstr "Датчики"
+
+msgid "Details"
+msgstr "Подробности"
+
+msgid "Performance"
+msgstr "Производительность"
+
+msgid "Apps"
+msgstr "Приложения"
+
+msgid "Services"
+msgstr "Службы"
+
+msgid "Stress Test"
+msgstr "Стресс-тест"
+
+msgid "Preferences"
+msgstr "Настройки"
+
+msgid "About"
+msgstr "О программе"
+
+msgid "Export data"
+msgstr "Экспорт данных"
+
+msgid "Export CSV"
+msgstr "Экспорт в CSV"
+
+msgid "Export JSON"
+msgstr "Экспорт в JSON"
+
+msgid "Export Text"
+msgstr "Экспорт в текст"
+
+msgid "General"
+msgstr "Общие"
+
+msgid "Update interval"
+msgstr "Интервал обновления"
+
+msgid "Temperature unit"
+msgstr "Единица температуры"
+
+msgid "Celsius"
+msgstr "Цельсий"
+
+msgid "Fahrenheit"
+msgstr "Фаренгейт"
+
+msgid "Data unit"
+msgstr "Единица данных"
+
+msgid "Critical temperature notifications"
+msgstr "Уведомления о критической температуре"
+
+msgid "Theme"
+msgstr "Тема"
+
+msgid "System"
+msgstr "Системная"
+
+msgid "Light"
+msgstr "Светлая"
+
+msgid "Dark"
+msgstr "Тёмная"
+
+msgid "Sidebar"
+msgstr "Боковая панель"
+
+msgid "Sidebar buttons"
+msgstr "Кнопки боковой панели"
+
+msgid "Choose which categories appear in the sidebar and their order."
+msgstr "Выберите категории для боковой панели и их порядок."
+
+msgid "Reset to Defaults"
+msgstr "Сбросить к значениям по умолчанию"
+
+msgid "sensors"
+msgstr "датчики"
+
+msgid "Linux HW Monitor"
+msgstr "Linux HW Monitor"
+
+msgid "Test Method"
+msgstr "Метод теста"
+
+msgid "Choose the component and stress algorithm. The badge shows the intensity level."
+msgstr "Выберите компонент и алгоритм стресса. Значок показывает уровень интенсивности."
+
+msgid "Safety Watchdog"
+msgstr "Сторожевой таймер безопасности"
+
+msgid "Stress process is killed (SIGKILL) if temperature exceeds the limit."
+msgstr "Процесс стресс-теста завершается (SIGKILL), если температура превышает лимит."
+
+msgid "Temperature limit (°C)"
+msgstr "Температурный лимит (°C)"
+
+msgid "Live Status"
+msgstr "Состояние в реальном времени"
+
+msgid "CPU Temperature"
+msgstr "Температура ЦП"
+
+msgid "GPU Temperature"
+msgstr "Температура ГП"
+
+msgid "Elapsed"
+msgstr "Прошло времени"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Idle"
+msgstr "Ожидание"
+
+msgid "Running…"
+msgstr "Выполняется…"
+
+msgid "Start Stress Test"
+msgstr "Запустить стресс-тест"
+
+msgid "Stop"
+msgstr "Остановить"
+
+msgid "Last Session Report"
+msgstr "Отчёт последней сессии"
+
+msgid "Peak CPU Temp"
+msgstr "Пиковая темп. ЦП"
+
+msgid "Peak GPU Temp"
+msgstr "Пиковая темп. ГП"
+
+msgid "Thermal Throttling"
+msgstr "Тепловое троттлинг"
+
+msgid "Energy Consumed"
+msgstr "Потреблённая энергия"
+
+msgid "Average Power"
+msgstr "Средняя мощность"
+
+msgid "Duration"
+msgstr "Длительность"
+
+msgid "Matrix Product"
+msgstr "Произведение матриц"
+
+msgid "Pi Calculation"
+msgstr "Вычисление числа Пи"
+
+msgid "AVX / FPU"
+msgstr "AVX / FPU"
+
+msgid "Pattern Write"
+msgstr "Запись паттерна"
+
+msgid "Stress-NG VM"
+msgstr "Stress-NG VM"
+
+msgid "GLmark2 Nodes"
+msgstr "Узлы GLmark2"
+
+msgid "Tessellation"
+msgstr "Тесселяция"
+
+msgid "Sequential R/W"
+msgstr "Последовательное чтение/запись"
+
+msgid "Random IOPS"
+msgstr "Случайные IOPS"
+
+msgid "Low / Med"
+msgstr "Низкий / Средний"
+
+msgid "Medium"
+msgstr "Средний"
+
+msgid "Extreme"
+msgstr "Экстремальный"
+
+msgid "Low"
+msgstr "Низкий"
+
+msgid "High"
+msgstr "Высокий"
+
+msgid "Cannot Start Stress Test"
+msgstr "Не удалось запустить стресс-тест"
+
+msgid "A stress test is already running."
+msgstr "Стресс-тест уже выполняется."
+
+msgid "Insufficient free RAM. Need at least 512 MB to safely run a memory stress test."
+msgstr "Недостаточно свободной оперативной памяти. Необходимо не менее 512 МБ для безопасного запуска теста памяти."
+
+msgid "Required tool is not installed. Please install it via your package manager."
+msgstr "Требуемый инструмент не установлен. Установите его через менеджер пакетов."
+
+msgid "Idle (stopped manually)"
+msgstr "Ожидание (остановлено вручную)"
+
+msgid "Idle (watchdog: temperature limit reached)"
+msgstr "Ожидание (сторожевой таймер: достигнут температурный лимит)"
+
+msgid "Idle (process exited)"
+msgstr "Ожидание (процесс завершён)"
+
+msgid "⚠ Throttling detected"
+msgstr "⚠ Обнаружено тепловое троттлинг"
+
+msgid "No throttling"
+msgstr "Троттлинг отсутствует"
+
+msgid "N/A (RAPL not available)"
+msgstr "Н/Д (RAPL недоступен)"
+
+msgid "N/A"
+msgstr "Н/Д"
+
+msgid "OK"
+msgstr "ОК"
+
+msgid "Processes"
+msgstr "Процессы"
+
+msgid "Loading..."
+msgstr "Загрузка..."
+
+msgid "Filter by name or user..."
+msgstr "Фильтр по имени или пользователю..."
+
+msgid "Kill user processes"
+msgstr "Завершить процессы пользователя"
+
+msgid "Terminates user processes (does not touch system processes)"
+msgstr "Завершает пользовательские процессы (системные не затрагиваются)"
+
+msgid "Refresh now"
+msgstr "Обновить сейчас"
+
+msgid "Terminate"
+msgstr "Завершить"
+
+msgid "Force Kill"
+msgstr "Принудительно завершить"
+
+msgid "Send SIGTERM to process"
+msgstr "Отправить SIGTERM процессу"
+
+msgid "Send SIGKILL (immediate force)"
+msgstr "Отправить SIGKILL (немедленно)"
+
+msgid "Filter by name or description..."
+msgstr "Фильтр по имени или описанию..."
+
+msgid "Stop user services"
+msgstr "Остановить службы пользователя"
+
+msgid "Stops only the current user's services"
+msgstr "Останавливает только службы текущего пользователя"

@@ -1,0 +1,292 @@
+# Linux HW Monitor - Translation template
+# Copyright (C) 2024 Linux HW Monitor Contributors
+# This file is distributed under the same license as the linux-hw-monitor package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: linux-hw-monitor 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/usuario/linux-hw-monitor/issues\n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Window / sidebar
+msgid "Sensors"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "Performance"
+msgstr ""
+
+msgid "Apps"
+msgstr ""
+
+msgid "Services"
+msgstr ""
+
+msgid "Stress Test"
+msgstr ""
+
+# Header buttons
+msgid "Preferences"
+msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "Export data"
+msgstr ""
+
+msgid "Export CSV"
+msgstr ""
+
+msgid "Export JSON"
+msgstr ""
+
+msgid "Export Text"
+msgstr ""
+
+# Preferences dialog
+msgid "General"
+msgstr ""
+
+msgid "Update interval"
+msgstr ""
+
+msgid "Temperature unit"
+msgstr ""
+
+msgid "Celsius"
+msgstr ""
+
+msgid "Fahrenheit"
+msgstr ""
+
+msgid "Data unit"
+msgstr ""
+
+msgid "Critical temperature notifications"
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
+msgid "System"
+msgstr ""
+
+msgid "Light"
+msgstr ""
+
+msgid "Dark"
+msgstr ""
+
+msgid "Sidebar"
+msgstr ""
+
+msgid "Sidebar buttons"
+msgstr ""
+
+msgid "Choose which categories appear in the sidebar and their order."
+msgstr ""
+
+msgid "Reset to Defaults"
+msgstr ""
+
+msgid "sensors"
+msgstr ""
+
+msgid "Linux HW Monitor"
+msgstr ""
+
+# Stress Test page
+msgid "Test Method"
+msgstr ""
+
+msgid "Choose the component and stress algorithm. The badge shows the intensity level."
+msgstr ""
+
+msgid "Safety Watchdog"
+msgstr ""
+
+msgid "Stress process is killed (SIGKILL) if temperature exceeds the limit."
+msgstr ""
+
+msgid "Temperature limit (°C)"
+msgstr ""
+
+msgid "Live Status"
+msgstr ""
+
+msgid "CPU Temperature"
+msgstr ""
+
+msgid "GPU Temperature"
+msgstr ""
+
+msgid "Elapsed"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Idle"
+msgstr ""
+
+msgid "Running…"
+msgstr ""
+
+msgid "Start Stress Test"
+msgstr ""
+
+msgid "Stop"
+msgstr ""
+
+msgid "Last Session Report"
+msgstr ""
+
+msgid "Peak CPU Temp"
+msgstr ""
+
+msgid "Peak GPU Temp"
+msgstr ""
+
+msgid "Thermal Throttling"
+msgstr ""
+
+msgid "Energy Consumed"
+msgstr ""
+
+msgid "Average Power"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+# Stress methods
+msgid "Matrix Product"
+msgstr ""
+
+msgid "Pi Calculation"
+msgstr ""
+
+msgid "AVX / FPU"
+msgstr ""
+
+msgid "Pattern Write"
+msgstr ""
+
+msgid "Stress-NG VM"
+msgstr ""
+
+msgid "GLmark2 Nodes"
+msgstr ""
+
+msgid "Tessellation"
+msgstr ""
+
+msgid "Sequential R/W"
+msgstr ""
+
+msgid "Random IOPS"
+msgstr ""
+
+# Intensity levels
+msgid "Low / Med"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Extreme"
+msgstr ""
+
+msgid "Low"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+# Error messages
+msgid "Cannot Start Stress Test"
+msgstr ""
+
+msgid "A stress test is already running."
+msgstr ""
+
+msgid "Insufficient free RAM. Need at least 512 MB to safely run a memory stress test."
+msgstr ""
+
+msgid "Required tool is not installed. Please install it via your package manager."
+msgstr ""
+
+msgid "Idle (stopped manually)"
+msgstr ""
+
+msgid "Idle (watchdog: temperature limit reached)"
+msgstr ""
+
+msgid "Idle (process exited)"
+msgstr ""
+
+msgid "⚠ Throttling detected"
+msgstr ""
+
+msgid "No throttling"
+msgstr ""
+
+msgid "N/A (RAPL not available)"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+# Processes page
+msgid "Processes"
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+msgid "Filter by name or user..."
+msgstr ""
+
+msgid "Kill user processes"
+msgstr ""
+
+msgid "Terminates user processes (does not touch system processes)"
+msgstr ""
+
+msgid "Refresh now"
+msgstr ""
+
+msgid "Terminate"
+msgstr ""
+
+msgid "Force Kill"
+msgstr ""
+
+msgid "Send SIGTERM to process"
+msgstr ""
+
+msgid "Send SIGKILL (immediate force)"
+msgstr ""
+
+# Services page
+msgid "Filter by name or description..."
+msgstr ""
+
+msgid "Stop user services"
+msgstr ""
+
+msgid "Stops only the current user's services"
+msgstr ""

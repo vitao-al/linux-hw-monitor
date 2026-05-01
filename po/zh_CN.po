@@ -1,0 +1,276 @@
+# Simplified Chinese translation for Linux HW Monitor
+msgid ""
+msgstr ""
+"Project-Id-Version: linux-hw-monitor 1.0\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Sensors"
+msgstr "传感器"
+
+msgid "Details"
+msgstr "详情"
+
+msgid "Performance"
+msgstr "性能"
+
+msgid "Apps"
+msgstr "应用程序"
+
+msgid "Services"
+msgstr "服务"
+
+msgid "Stress Test"
+msgstr "压力测试"
+
+msgid "Preferences"
+msgstr "首选项"
+
+msgid "About"
+msgstr "关于"
+
+msgid "Export data"
+msgstr "导出数据"
+
+msgid "Export CSV"
+msgstr "导出 CSV"
+
+msgid "Export JSON"
+msgstr "导出 JSON"
+
+msgid "Export Text"
+msgstr "导出文本"
+
+msgid "General"
+msgstr "常规"
+
+msgid "Update interval"
+msgstr "更新间隔"
+
+msgid "Temperature unit"
+msgstr "温度单位"
+
+msgid "Celsius"
+msgstr "摄氏度"
+
+msgid "Fahrenheit"
+msgstr "华氏度"
+
+msgid "Data unit"
+msgstr "数据单位"
+
+msgid "Critical temperature notifications"
+msgstr "临界温度通知"
+
+msgid "Theme"
+msgstr "主题"
+
+msgid "System"
+msgstr "系统"
+
+msgid "Light"
+msgstr "浅色"
+
+msgid "Dark"
+msgstr "深色"
+
+msgid "Sidebar"
+msgstr "侧边栏"
+
+msgid "Sidebar buttons"
+msgstr "侧边栏按钮"
+
+msgid "Choose which categories appear in the sidebar and their order."
+msgstr "选择在侧边栏中显示的类别及其顺序。"
+
+msgid "Reset to Defaults"
+msgstr "恢复默认设置"
+
+msgid "sensors"
+msgstr "个传感器"
+
+msgid "Linux HW Monitor"
+msgstr "Linux 硬件监控"
+
+msgid "Test Method"
+msgstr "测试方法"
+
+msgid "Choose the component and stress algorithm. The badge shows the intensity level."
+msgstr "选择组件和压力算法。徽章显示强度级别。"
+
+msgid "Safety Watchdog"
+msgstr "安全看门狗"
+
+msgid "Stress process is killed (SIGKILL) if temperature exceeds the limit."
+msgstr "如果温度超过限制，压力进程将被终止 (SIGKILL)。"
+
+msgid "Temperature limit (°C)"
+msgstr "温度限制 (°C)"
+
+msgid "Live Status"
+msgstr "实时状态"
+
+msgid "CPU Temperature"
+msgstr "CPU 温度"
+
+msgid "GPU Temperature"
+msgstr "GPU 温度"
+
+msgid "Elapsed"
+msgstr "已用时间"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Idle"
+msgstr "空闲"
+
+msgid "Running…"
+msgstr "运行中…"
+
+msgid "Start Stress Test"
+msgstr "开始压力测试"
+
+msgid "Stop"
+msgstr "停止"
+
+msgid "Last Session Report"
+msgstr "上次会话报告"
+
+msgid "Peak CPU Temp"
+msgstr "CPU 峰值温度"
+
+msgid "Peak GPU Temp"
+msgstr "GPU 峰值温度"
+
+msgid "Thermal Throttling"
+msgstr "热节流"
+
+msgid "Energy Consumed"
+msgstr "消耗能量"
+
+msgid "Average Power"
+msgstr "平均功率"
+
+msgid "Duration"
+msgstr "持续时间"
+
+msgid "Matrix Product"
+msgstr "矩阵乘积"
+
+msgid "Pi Calculation"
+msgstr "Pi 计算"
+
+msgid "AVX / FPU"
+msgstr "AVX / FPU"
+
+msgid "Pattern Write"
+msgstr "模式写入"
+
+msgid "Stress-NG VM"
+msgstr "Stress-NG 虚拟机"
+
+msgid "GLmark2 Nodes"
+msgstr "GLmark2 节点"
+
+msgid "Tessellation"
+msgstr "曲面细分"
+
+msgid "Sequential R/W"
+msgstr "顺序读写"
+
+msgid "Random IOPS"
+msgstr "随机 IOPS"
+
+msgid "Low / Med"
+msgstr "低 / 中"
+
+msgid "Medium"
+msgstr "中"
+
+msgid "Extreme"
+msgstr "极端"
+
+msgid "Low"
+msgstr "低"
+
+msgid "High"
+msgstr "高"
+
+msgid "Cannot Start Stress Test"
+msgstr "无法启动压力测试"
+
+msgid "A stress test is already running."
+msgstr "压力测试已在运行中。"
+
+msgid "Insufficient free RAM. Need at least 512 MB to safely run a memory stress test."
+msgstr "可用内存不足。需要至少 512 MB 才能安全运行内存压力测试。"
+
+msgid "Required tool is not installed. Please install it via your package manager."
+msgstr "所需工具未安装。请通过软件包管理器安装。"
+
+msgid "Idle (stopped manually)"
+msgstr "空闲（手动停止）"
+
+msgid "Idle (watchdog: temperature limit reached)"
+msgstr "空闲（看门狗：已达温度限制）"
+
+msgid "Idle (process exited)"
+msgstr "空闲（进程已退出）"
+
+msgid "⚠ Throttling detected"
+msgstr "⚠ 检测到热节流"
+
+msgid "No throttling"
+msgstr "无热节流"
+
+msgid "N/A (RAPL not available)"
+msgstr "N/A（RAPL 不可用）"
+
+msgid "N/A"
+msgstr "N/A"
+
+msgid "OK"
+msgstr "确定"
+
+msgid "Processes"
+msgstr "进程"
+
+msgid "Loading..."
+msgstr "加载中..."
+
+msgid "Filter by name or user..."
+msgstr "按名称或用户筛选..."
+
+msgid "Kill user processes"
+msgstr "终止用户进程"
+
+msgid "Terminates user processes (does not touch system processes)"
+msgstr "终止用户进程（不影响系统进程）"
+
+msgid "Refresh now"
+msgstr "立即刷新"
+
+msgid "Terminate"
+msgstr "终止"
+
+msgid "Force Kill"
+msgstr "强制终止"
+
+msgid "Send SIGTERM to process"
+msgstr "向进程发送 SIGTERM"
+
+msgid "Send SIGKILL (immediate force)"
+msgstr "发送 SIGKILL（立即强制）"
+
+msgid "Filter by name or description..."
+msgstr "按名称或描述筛选..."
+
+msgid "Stop user services"
+msgstr "停止用户服务"
+
+msgid "Stops only the current user's services"
+msgstr "仅停止当前用户的服务"

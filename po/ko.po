@@ -1,0 +1,276 @@
+# Korean translation for Linux HW Monitor
+msgid ""
+msgstr ""
+"Project-Id-Version: linux-hw-monitor 1.0\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Sensors"
+msgstr "센서"
+
+msgid "Details"
+msgstr "세부 정보"
+
+msgid "Performance"
+msgstr "성능"
+
+msgid "Apps"
+msgstr "앱"
+
+msgid "Services"
+msgstr "서비스"
+
+msgid "Stress Test"
+msgstr "스트레스 테스트"
+
+msgid "Preferences"
+msgstr "기본 설정"
+
+msgid "About"
+msgstr "정보"
+
+msgid "Export data"
+msgstr "데이터 내보내기"
+
+msgid "Export CSV"
+msgstr "CSV로 내보내기"
+
+msgid "Export JSON"
+msgstr "JSON으로 내보내기"
+
+msgid "Export Text"
+msgstr "텍스트로 내보내기"
+
+msgid "General"
+msgstr "일반"
+
+msgid "Update interval"
+msgstr "업데이트 간격"
+
+msgid "Temperature unit"
+msgstr "온도 단위"
+
+msgid "Celsius"
+msgstr "섭씨"
+
+msgid "Fahrenheit"
+msgstr "화씨"
+
+msgid "Data unit"
+msgstr "데이터 단위"
+
+msgid "Critical temperature notifications"
+msgstr "임계 온도 알림"
+
+msgid "Theme"
+msgstr "테마"
+
+msgid "System"
+msgstr "시스템"
+
+msgid "Light"
+msgstr "밝음"
+
+msgid "Dark"
+msgstr "어두움"
+
+msgid "Sidebar"
+msgstr "사이드바"
+
+msgid "Sidebar buttons"
+msgstr "사이드바 버튼"
+
+msgid "Choose which categories appear in the sidebar and their order."
+msgstr "사이드바에 표시할 카테고리와 순서를 선택하세요."
+
+msgid "Reset to Defaults"
+msgstr "기본값으로 재설정"
+
+msgid "sensors"
+msgstr "개 센서"
+
+msgid "Linux HW Monitor"
+msgstr "Linux HW Monitor"
+
+msgid "Test Method"
+msgstr "테스트 방법"
+
+msgid "Choose the component and stress algorithm. The badge shows the intensity level."
+msgstr "컴포넌트와 스트레스 알고리즘을 선택하세요. 배지는 강도 수준을 나타냅니다."
+
+msgid "Safety Watchdog"
+msgstr "안전 감시"
+
+msgid "Stress process is killed (SIGKILL) if temperature exceeds the limit."
+msgstr "온도가 한계를 초과하면 스트레스 프로세스가 종료됩니다(SIGKILL)."
+
+msgid "Temperature limit (°C)"
+msgstr "온도 한계 (°C)"
+
+msgid "Live Status"
+msgstr "실시간 상태"
+
+msgid "CPU Temperature"
+msgstr "CPU 온도"
+
+msgid "GPU Temperature"
+msgstr "GPU 온도"
+
+msgid "Elapsed"
+msgstr "경과 시간"
+
+msgid "Status"
+msgstr "상태"
+
+msgid "Idle"
+msgstr "유휴"
+
+msgid "Running…"
+msgstr "실행 중…"
+
+msgid "Start Stress Test"
+msgstr "스트레스 테스트 시작"
+
+msgid "Stop"
+msgstr "중지"
+
+msgid "Last Session Report"
+msgstr "마지막 세션 보고서"
+
+msgid "Peak CPU Temp"
+msgstr "CPU 최고 온도"
+
+msgid "Peak GPU Temp"
+msgstr "GPU 최고 온도"
+
+msgid "Thermal Throttling"
+msgstr "열 조절"
+
+msgid "Energy Consumed"
+msgstr "소비 에너지"
+
+msgid "Average Power"
+msgstr "평균 전력"
+
+msgid "Duration"
+msgstr "지속 시간"
+
+msgid "Matrix Product"
+msgstr "행렬 곱"
+
+msgid "Pi Calculation"
+msgstr "파이 계산"
+
+msgid "AVX / FPU"
+msgstr "AVX / FPU"
+
+msgid "Pattern Write"
+msgstr "패턴 쓰기"
+
+msgid "Stress-NG VM"
+msgstr "Stress-NG VM"
+
+msgid "GLmark2 Nodes"
+msgstr "GLmark2 노드"
+
+msgid "Tessellation"
+msgstr "테셀레이션"
+
+msgid "Sequential R/W"
+msgstr "순차 읽기/쓰기"
+
+msgid "Random IOPS"
+msgstr "랜덤 IOPS"
+
+msgid "Low / Med"
+msgstr "낮음 / 중간"
+
+msgid "Medium"
+msgstr "중간"
+
+msgid "Extreme"
+msgstr "극한"
+
+msgid "Low"
+msgstr "낮음"
+
+msgid "High"
+msgstr "높음"
+
+msgid "Cannot Start Stress Test"
+msgstr "스트레스 테스트를 시작할 수 없습니다"
+
+msgid "A stress test is already running."
+msgstr "스트레스 테스트가 이미 실행 중입니다."
+
+msgid "Insufficient free RAM. Need at least 512 MB to safely run a memory stress test."
+msgstr "여유 RAM이 부족합니다. 메모리 스트레스 테스트를 안전하게 실행하려면 최소 512MB가 필요합니다."
+
+msgid "Required tool is not installed. Please install it via your package manager."
+msgstr "필요한 도구가 설치되어 있지 않습니다. 패키지 관리자를 통해 설치하세요."
+
+msgid "Idle (stopped manually)"
+msgstr "유휴 (수동 중지)"
+
+msgid "Idle (watchdog: temperature limit reached)"
+msgstr "유휴 (감시: 온도 한계 도달)"
+
+msgid "Idle (process exited)"
+msgstr "유휴 (프로세스 종료)"
+
+msgid "⚠ Throttling detected"
+msgstr "⚠ 열 조절 감지됨"
+
+msgid "No throttling"
+msgstr "열 조절 없음"
+
+msgid "N/A (RAPL not available)"
+msgstr "N/A (RAPL 사용 불가)"
+
+msgid "N/A"
+msgstr "N/A"
+
+msgid "OK"
+msgstr "확인"
+
+msgid "Processes"
+msgstr "프로세스"
+
+msgid "Loading..."
+msgstr "불러오는 중..."
+
+msgid "Filter by name or user..."
+msgstr "이름 또는 사용자로 필터..."
+
+msgid "Kill user processes"
+msgstr "사용자 프로세스 종료"
+
+msgid "Terminates user processes (does not touch system processes)"
+msgstr "사용자 프로세스를 종료합니다(시스템 프로세스는 건드리지 않음)"
+
+msgid "Refresh now"
+msgstr "지금 새로 고침"
+
+msgid "Terminate"
+msgstr "종료"
+
+msgid "Force Kill"
+msgstr "강제 종료"
+
+msgid "Send SIGTERM to process"
+msgstr "프로세스에 SIGTERM 전송"
+
+msgid "Send SIGKILL (immediate force)"
+msgstr "SIGKILL 전송 (즉시 강제)"
+
+msgid "Filter by name or description..."
+msgstr "이름 또는 설명으로 필터..."
+
+msgid "Stop user services"
+msgstr "사용자 서비스 중지"
+
+msgid "Stops only the current user's services"
+msgstr "현재 사용자의 서비스만 중지합니다"

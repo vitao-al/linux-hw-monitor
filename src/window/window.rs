@@ -8,7 +8,7 @@ use crate::config::AppConfig;
 use crate::sensors::manager::SensorManager;
 use crate::sensors::types::{SensorData, SensorValue};
 use crate::ui::gauge_widget::GaugeWidget;
-use crate::ui::graph_widget::build_graph_widget;
+use crate::ui::graph_widget::{build_graph_widget, group_color};
 use crate::window::actions::install_actions;
 
 /// Per-group sidebar entry: (id, label, visible).
@@ -19,6 +19,8 @@ use crate::window::icons::{best_icon_name, preferred_icon_for_group};
 use crate::window::processes::{
     build_apps_page, build_services_page, rebuild_apps_list, rebuild_services_list,
 };
+use crate::i18n::t;
+use crate::window::stress::build_stress_page;
 use crate::window::style::install_visual_defaults;
 
 pub struct MainWindow {
@@ -43,7 +45,7 @@ impl MainWindow {
             .hexpand(true)
             .build();
         let sidebar_page = adw::NavigationPage::builder()
-            .title("Sensors")
+            .title(&t("Sensors"))
             .child(&sidebar_scroll)
             .build();
 
@@ -73,7 +75,7 @@ impl MainWindow {
         content_box.append(&content_scroll);
 
         let content_page = adw::NavigationPage::builder()
-            .title("Details")
+            .title(&t("Details"))
             .child(&content_box)
             .build();
 
@@ -88,11 +90,15 @@ impl MainWindow {
         let services_list = services_page.0;
         let services_summary = services_page.1;
 
+        let stress_page_widget = build_stress_page();
+
         let view_stack = adw::ViewStack::new();
-        let perf_page = view_stack.add_titled(&split, Some("performance"), "Performance");
-        let apps_page_stack = view_stack.add_titled(&apps_page.2, Some("apps"), "Apps");
+        let perf_page = view_stack.add_titled(&split, Some("performance"), &t("Performance"));
+        let apps_page_stack = view_stack.add_titled(&apps_page.2, Some("apps"), &t("Apps"));
         let services_page_stack =
-            view_stack.add_titled(&services_page.2, Some("services"), "Services");
+            view_stack.add_titled(&services_page.2, Some("services"), &t("Services"));
+        let stress_page_stack =
+            view_stack.add_titled(&stress_page_widget, Some("stress"), &t("Stress Test"));
 
         perf_page.set_icon_name(Some(&best_icon_name(
             &["utilities-system-monitor-symbolic", "computer-symbolic"],
@@ -109,6 +115,10 @@ impl MainWindow {
             &["system-run-symbolic", "applications-system-symbolic"],
             "applications-system-symbolic",
         )));
+        stress_page_stack.set_icon_name(Some(&best_icon_name(
+            &["temperature-symbolic", "dialog-warning-symbolic", "utilities-system-monitor-symbolic"],
+            "utilities-system-monitor-symbolic",
+        )));
 
         let header = adw::HeaderBar::new();
         let switcher = adw::ViewSwitcher::new();
@@ -118,21 +128,21 @@ impl MainWindow {
         header.set_title_widget(Some(&switcher));
 
         let pref_btn = gtk::Button::from_icon_name("emblem-system-symbolic");
-        pref_btn.set_tooltip_text(Some("Preferences"));
+        pref_btn.set_tooltip_text(Some(&t("Preferences")));
         header.pack_end(&pref_btn);
 
         let about_btn = gtk::Button::from_icon_name("help-about-symbolic");
-        about_btn.set_tooltip_text(Some("About"));
+        about_btn.set_tooltip_text(Some(&t("About")));
         header.pack_end(&about_btn);
 
         let export_menu = gtk::MenuButton::builder()
             .icon_name("document-save-symbolic")
-            .tooltip_text("Export")
+            .tooltip_text(&t("Export data"))
             .build();
         let model = gio::Menu::new();
-        model.append(Some("Export CSV"), Some("app.export-csv"));
-        model.append(Some("Export JSON"), Some("app.export-json"));
-        model.append(Some("Export Text"), Some("app.export-text"));
+        model.append(Some(&t("Export CSV")), Some("app.export-csv"));
+        model.append(Some(&t("Export JSON")), Some("app.export-json"));
+        model.append(Some(&t("Export Text")), Some("app.export-text"));
         export_menu.set_menu_model(Some(&model));
         header.pack_end(&export_menu);
 
@@ -142,7 +152,7 @@ impl MainWindow {
 
         let window = adw::ApplicationWindow::builder()
             .application(app)
-            .title("Linux HW Monitor")
+.title(&t("Linux HW Monitor"))
             .default_width(1100)
             .default_height(720)
             .content(&toolbar)
@@ -163,32 +173,32 @@ impl MainWindow {
         let last_groups_pref = Rc::clone(&last_groups);
         pref_btn.connect_clicked(move |_| {
             let pref = adw::PreferencesWindow::new();
-            pref.set_title(Some("Preferences"));
+            pref.set_title(Some(&t("Preferences")));
             pref.set_transient_for(Some(&pref_parent));
 
             let page = adw::PreferencesPage::new();
-            let group = adw::PreferencesGroup::builder().title("General").build();
+            let group = adw::PreferencesGroup::builder().title(&t("General")).build();
 
-            let interval = adw::ComboRow::builder().title("Update interval").build();
+            let interval = adw::ComboRow::builder().title(&t("Update interval")).build();
             let interval_model = gtk::StringList::new(&["1s", "2s", "5s"]);
             interval.set_model(Some(&interval_model));
             interval.set_selected(0);
 
-            let temp = adw::ComboRow::builder().title("Temperature unit").build();
-            let temp_model = gtk::StringList::new(&["Celsius", "Fahrenheit"]);
+            let temp = adw::ComboRow::builder().title(&t("Temperature unit")).build();
+            let temp_model = gtk::StringList::new(&[&t("Celsius"), &t("Fahrenheit")]);
             temp.set_model(Some(&temp_model));
 
-            let data_unit = adw::ComboRow::builder().title("Data unit").build();
+            let data_unit = adw::ComboRow::builder().title(&t("Data unit")).build();
             let data_model = gtk::StringList::new(&["SI", "IEC"]);
             data_unit.set_model(Some(&data_model));
 
             let notify = adw::SwitchRow::builder()
-                .title("Critical temperature notifications")
+                .title(&t("Critical temperature notifications"))
                 .active(true)
                 .build();
 
-            let theme = adw::ComboRow::builder().title("Theme").build();
-            let theme_model = gtk::StringList::new(&["System", "Light", "Dark"]);
+            let theme = adw::ComboRow::builder().title(&t("Theme")).build();
+            let theme_model = gtk::StringList::new(&[&t("System"), &t("Light"), &t("Dark")]);
             theme.set_model(Some(&theme_model));
             let selected_theme = match style_manager.color_scheme() {
                 adw::ColorScheme::ForceLight => 1,
@@ -216,13 +226,13 @@ impl MainWindow {
 
             // ── Sidebar page ──────────────────────────────────────────────
             let sidebar_page = adw::PreferencesPage::builder()
-                .title("Sidebar")
+                .title(&t("Sidebar"))
                 .icon_name("view-list-symbolic")
                 .build();
 
             let sidebar_group = adw::PreferencesGroup::builder()
-                .title("Sidebar buttons")
-                .description("Choose which categories appear in the sidebar and their order.")
+                .title(&t("Sidebar buttons"))
+                .description(&t("Choose which categories appear in the sidebar and their order."))
                 .build();
 
             // Snapshot the current prefs (or build from last_groups if not set).
@@ -345,7 +355,7 @@ impl MainWindow {
 
             // "Reset to defaults" button clears the custom prefs.
             let reset_btn = gtk::Button::builder()
-                .label("Reset to Defaults")
+                .label(&t("Reset to Defaults"))
                 .css_classes(["destructive-action"])
                 .halign(gtk::Align::End)
                 .build();
@@ -544,7 +554,7 @@ fn rebuild_content(container: &gtk::Box, data: &SensorData, selected: &str) {
     title.add_css_class("title-2");
     title.set_hexpand(true);
 
-    let subtitle = gtk::Label::new(Some(&format!("{} sensores", group.sensors.len())));
+    let subtitle = gtk::Label::new(Some(&format!("{} {}", group.sensors.len(), t("sensors"))));
     subtitle.add_css_class("dim-label");
     subtitle.set_xalign(1.0);
     header.append(&title);
@@ -555,8 +565,9 @@ fn rebuild_content(container: &gtk::Box, data: &SensorData, selected: &str) {
     graph_grid.set_column_spacing(10);
     graph_grid.set_row_spacing(10);
 
+    let color = group_color(&group.id);
     for (idx, sensor) in group.sensors.iter().enumerate() {
-        let card = build_sensor_card(sensor);
+        let card = build_sensor_card(sensor, color);
         let col = (idx % 2) as i32;
         let row = (idx / 2) as i32;
         graph_grid.attach(&card, col, row, 1, 1);
@@ -565,7 +576,7 @@ fn rebuild_content(container: &gtk::Box, data: &SensorData, selected: &str) {
     container.append(&graph_grid);
 }
 
-fn build_sensor_card(sensor: &SensorValue) -> gtk::Frame {
+fn build_sensor_card(sensor: &SensorValue, color: (f64, f64, f64)) -> gtk::Frame {
     let frame = gtk::Frame::new(None);
     frame.add_css_class("card");
 
@@ -586,7 +597,7 @@ fn build_sensor_card(sensor: &SensorValue) -> gtk::Frame {
     top.append(&value);
 
     let history = sensor.history.iter().copied().collect::<Vec<_>>();
-    let graph = build_graph_widget(&history, 360, 120);
+    let graph = build_graph_widget(&history, 360, 120, color);
 
     card.append(&top);
     card.append(&graph);
