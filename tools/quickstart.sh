@@ -7,6 +7,7 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 APP_ID="io.github.usuario.LinuxHWMonitor"
 MANIFEST="${PROJECT_ROOT}/flatpak/io.github.usuario.LinuxHWMonitor.yml"
 BUILD_DIR="${PROJECT_ROOT}/build-flatpak"
+STATE_DIR="${PROJECT_ROOT}/.flatpak-state"
 TMP_MANIFEST="${PROJECT_ROOT}/.flatpak.manifest.autogen.yml"
 
 log() {
@@ -119,7 +120,18 @@ prepare_manifest() {
 
 build_and_run() {
   log "Buildando Flatpak"
-  flatpak-builder --user --install --force-clean "$BUILD_DIR" "$TMP_MANIFEST"
+  # Remove legacy default state dir to avoid old oversized caches.
+  rm -rf "${PROJECT_ROOT}/.flatpak-builder"
+
+  flatpak-builder \
+    --jobs=1 \
+    --user \
+    --install \
+    --force-clean \
+    --delete-build-dirs \
+    --state-dir "$STATE_DIR" \
+    "$BUILD_DIR" \
+    "$TMP_MANIFEST"
 
   log "Abrindo UI"
   flatpak run "$APP_ID"

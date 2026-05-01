@@ -1,0 +1,32 @@
+# Build outputs (Rust)
+/target/
+/helper/target/
+
+# Build outputs (Meson/Ninja)
+/builddir/
+*.ninja
+
+# Build outputs (Flatpak)
+/.flatpak-builder/
+/.flatpak-state/
+/build-flatpak/
+/.flatpak.manifest.autogen.yml
+
+# Generated executables copied to project root
+/linux-hw-monitor
+/linux-hw-monitor-helper
+/helper/linux-hw-monitor-helper
+
+# Generated exports and diagnostics
+/linux-hw-monitor-export.csv
+/linux-hw-monitor-export.json
+/linux-hw-monitor-export.txt
+*.log
+
+# Editor and OS noise
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db

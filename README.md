@@ -1,92 +1,58 @@
-# LinuxHWMonitor
+# Linux HW Monitor
 
-Linux hardware monitor inspired by HWMonitor/HWiNFO, built with Rust + GTK4 + Libadwaita.
+Monitor de hardware para Linux inspirado em HWMonitor/HWiNFO, desenvolvido em Rust + GTK4 + libadwaita.
 
-## One command for all distros
+## O que o software faz
 
-For first UI tests with automatic dependency and runtime handling:
+- Exibe sensores em tempo real (CPU, GPU, memória, disco, rede, bateria, temperatura e energia, conforme disponibilidade no sistema).
+- Mostra medidores principais de CPU/GPU no topo.
+- Mantém histórico para gráficos com atualização contínua.
+- Possui páginas dedicadas para apps em execução e serviços ativos.
+- Permite exportar dados em CSV, JSON e TXT.
 
-./tools/quickstart.sh
+## Requisitos
 
-What this script does automatically:
+### Dependências principais
 
-- Installs `flatpak` and `flatpak-builder` on Fedora, Ubuntu/Debian, Arch and openSUSE.
-- Adds Flathub remote in user scope if needed.
-- Installs GNOME SDK/Platform 47 in user scope, and falls back to 46 when 47 is unavailable.
-- Tries Rust extension branch 24.08 and falls back to 23.08.
-- Builds and installs the app with Flatpak.
-- Launches the UI.
+- Rust e Cargo
+- GTK4 e libadwaita
+- Meson + Ninja
+- pkg-config
 
-This path is designed to work without root for runtime installation (`flatpak --user`).
+### Pacotes por distro
 
-Optional shortcut:
-
-make quickstart
-
-Environment diagnostics:
-
-./tools/diagnose.sh
-
-Or:
-
-make diagnose
-
-## Quick Start (first tests)
-
-### 1) Install dependencies
-
-#### Fedora 39+
+Fedora:
 
 ```bash
-sudo dnf install -y \
-  rust cargo \
-  gcc \
-  meson ninja-build \
-  pkgconf-pkg-config \
-  gtk4-devel libadwaita-devel \
-  glib2-devel
+sudo dnf install -y rust cargo gcc meson ninja-build pkgconf-pkg-config gtk4-devel libadwaita-devel glib2-devel
 ```
 
-#### Ubuntu 22.04+
+Ubuntu/Debian:
 
 ```bash
 sudo apt update
-sudo apt install -y \
-  rustc cargo \
-  build-essential \
-  meson ninja-build \
-  pkg-config \
-  libgtk-4-dev libadwaita-1-dev \
-  libglib2.0-dev
+sudo apt install -y rustc cargo build-essential meson ninja-build pkg-config libgtk-4-dev libadwaita-1-dev libglib2.0-dev
 ```
 
-#### Arch Linux
+Arch:
 
 ```bash
-sudo pacman -S --needed \
-  rust cargo \
-  base-devel \
-  meson ninja pkgconf \
-  gtk4 libadwaita glib2
+sudo pacman -S --needed rust cargo base-devel meson ninja pkgconf gtk4 libadwaita glib2
 ```
 
-### 2) Run locally with Cargo
+## Forma correta de usar o software
 
-From project root:
+### 1) Executar em modo desenvolvimento (recomendado)
+
+No diretório do projeto:
 
 ```bash
 cargo run
 ```
 
-This opens the GTK app and starts live sensor polling.
+Esse é o fluxo mais estável para uso diário durante desenvolvimento.
 
-### 3) Run tests
-
-```bash
-cargo test
-```
-
-### 4) Build with Meson (same layout used by packaging)
+### 2) Executar via Meson (layout de empacotamento)
 
 ```bash
 meson setup builddir
@@ -94,51 +60,79 @@ meson compile -C builddir
 ./builddir/linux-hw-monitor
 ```
 
-## Flatpak test build
-
-Install builder tools first:
-
-### Fedora
+### 3) Testar rapidamente dependências e ambiente
 
 ```bash
-sudo dnf install -y flatpak flatpak-builder
+./tools/diagnose.sh
 ```
 
-### Ubuntu
+Atalho via Makefile:
 
 ```bash
-sudo apt install -y flatpak flatpak-builder
+make diagnose
 ```
 
-### Arch
+## Guia de uso da interface
+
+1. Abra a aba Performance para acompanhar sensores e gráficos em tempo real.
+2. Clique nos grupos na barra lateral para ver detalhes de cada categoria.
+3. Use a aba Apps para inspecionar processos e encerrar PID quando necessário.
+4. Use a aba Services para verificar serviços em execução.
+5. No cabeçalho, use o botão de exportação para salvar CSV, JSON ou TXT.
+6. Em Preferences, ajuste tema, intervalo de atualização e unidades.
+
+## Exportação de dados
+
+- Formatos disponíveis: CSV, JSON e TXT.
+- O arquivo é salvo no caminho escolhido no diálogo de salvar.
+
+## Flatpak
+
+### Build automatizado
 
 ```bash
-sudo pacman -S --needed flatpak flatpak-builder
+./tools/quickstart.sh
 ```
 
-Then build and run:
+Ou:
 
 ```bash
-flatpak-builder --user --install --force-clean build-flatpak flatpak/io.github.usuario.LinuxHWMonitor.yml
+make quickstart
+```
+
+### Build manual
+
+```bash
+flatpak-builder --jobs=1 --user --install --force-clean --delete-build-dirs --state-dir .flatpak-state build-flatpak flatpak/io.github.usuario.LinuxHWMonitor.yml
 flatpak run io.github.usuario.LinuxHWMonitor
 ```
 
-## Notes for early tests
+Observação: se o build Flatpak falhar na fase de instalação com a mensagem `File 'linux-hw-monitor' could not be found`, use temporariamente `cargo run` para execução local enquanto o fluxo de empacotamento é ajustado.
 
-- Most sensors work without root.
-- SMART and DMI data require the privileged helper and proper polkit setup.
-- If NVIDIA data is empty, verify `nvidia-smi` works outside the app.
-- In sandboxed Flatpak runs, sensor visibility depends on `finish-args` filesystem access.
+### Limpeza segura de cache/estado Flatpak
 
-## Current environment status (this workspace)
+```bash
+make flatpak-clean
+```
 
-Tool check showed:
+Esse comando remove apenas diretórios temporários de build (`.flatpak-builder`, `.flatpak-state` e `build-flatpak`) e recria `build-flatpak` vazia.
 
-- `cargo`: missing
-- `rustc`: missing
-- `meson`: missing
-- `ninja`: missing
-- `flatpak`: installed
-- `flatpak-builder`: missing
+## Testes
 
-Install prerequisites first, then run `cargo run` for the first smoke test.
+```bash
+cargo test
+```
+
+## Permissões e limitações
+
+- Alguns sensores dependem de permissões adicionais no sistema.
+- Encerramento de processos pode exigir autenticação administrativa.
+- Em Flatpak, a visibilidade de sensores depende dos `finish-args` do manifesto.
+
+## Estrutura do projeto
+
+- `src/`: aplicação principal.
+- `helper/`: helper auxiliar para operações privilegiadas.
+- `data/`: desktop file, policy, schemas e ícones.
+- `flatpak/`: manifesto Flatpak.
+- `tools/`: scripts utilitários (`quickstart` e `diagnose`).
