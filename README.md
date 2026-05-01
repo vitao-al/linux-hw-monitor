@@ -103,9 +103,21 @@ make quickstart
 ### Build manual
 
 ```bash
-flatpak-builder --jobs=1 --user --install --force-clean --delete-build-dirs --state-dir .flatpak-state build-flatpak flatpak/io.github.usuario.LinuxHWMonitor.yml
-flatpak run io.github.usuario.LinuxHWMonitor
+flatpak-builder --jobs=1 --user --install --force-clean --delete-build-dirs --state-dir .flatpak-state build-flatpak flatpak/io.github.vitao_al.linux-hw-monitor.yml
+flatpak run io.github.vitao_al.linux-hw-monitor
 ```
+
+### Validacao de submissao Flathub (doc oficial)
+
+```bash
+flatpak install -y flathub org.flatpak.Builder
+flatpak run --command=flathub-build org.flatpak.Builder --install io.github.vitao_al.linux-hw-monitor/io.github.vitao_al.linux-hw-monitor.yml
+flatpak run io.github.vitao_al.linux-hw-monitor
+flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest io.github.vitao_al.linux-hw-monitor/io.github.vitao_al.linux-hw-monitor.yml
+flatpak run --command=flatpak-builder-lint org.flatpak.Builder repo repo
+```
+
+Observacao: para submissao inicial, a PR no flathub/flathub deve abrir contra a branch `new-pr`.
 
 Observação: se o build Flatpak falhar na fase de instalação com a mensagem `File 'linux-hw-monitor' could not be found`, use temporariamente `cargo run` para execução local enquanto o fluxo de empacotamento é ajustado.
 
@@ -121,7 +133,8 @@ Esse comando remove apenas diretórios temporários de build (`.flatpak-builder`
 
 Este repositório agora inclui base de empacotamento para os principais canais Linux:
 
-- Flatpak/Flathub: `packaging/flathub/io.github.usuario.LinuxHWMonitor.flathub.yml`
+- Flatpak/Flathub: `packaging/flathub/io.github.vitao_al.linux-hw-monitor.yml`
+- Dependency manifest (Cargo): `packaging/flathub/cargo-sources.json`
 - Snap Store: `packaging/snap/snapcraft.yaml`
 - AUR (Arch): `packaging/aur/PKGBUILD`
 - RPM/COPR (Fedora/openSUSE): `packaging/rpm/linux-hw-monitor.spec`
@@ -149,9 +162,9 @@ git push origin v1.0.1
 
 O projeto instala:
 
-- Desktop file: `data/io.github.usuario.LinuxHWMonitor.desktop`
-- Icone principal: `data/icons/hicolor/scalable/apps/io.github.usuario.LinuxHWMonitor.svg`
-- Icone simbolico: `data/icons/hicolor/symbolic/apps/io.github.usuario.LinuxHWMonitor-symbolic.svg`
+- Desktop file: `data/io.github.vitao_al.linux-hw-monitor.desktop`
+- Icone principal: `data/icons/hicolor/scalable/apps/io.github.vitao_al.linux-hw-monitor.svg`
+- Icone simbolico: `data/icons/hicolor/symbolic/apps/io.github.vitao_al.linux-hw-monitor-symbolic.svg`
 
 O script de pos-instalacao atualiza schemas, cache de desktop e cache de icones (`gtk-update-icon-cache`), garantindo aparicao na grade de apps do SO apos instalacao por pacote.
 

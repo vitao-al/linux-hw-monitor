@@ -4,7 +4,7 @@ use gtk4::glib;
 
 use crate::window::window::MainWindow;
 
-const APP_ID: &str = "io.github.usuario.LinuxHWMonitor";
+const APP_ID: &str = "io.github.vitao_al.linux-hw-monitor";
 
 pub fn build_application() -> adw::Application {
     install_adwaita_warning_filter();

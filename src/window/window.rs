@@ -484,11 +484,11 @@ impl MainWindow {
         about_btn.connect_clicked(move |_| {
             let about = adw::AboutWindow::builder()
                 .application_name("Linux HW Monitor")
-                .application_icon("io.github.usuario.LinuxHWMonitor")
+                .application_icon("io.github.vitao_al.linux-hw-monitor")
                 .developer_name("usuario")
                 .version("1.0.0")
-                .website("https://github.com/usuario/linux-hw-monitor")
-                .issue_url("https://github.com/usuario/linux-hw-monitor/issues")
+                .website("https://github.com/vitao-al/linux-hw-monitor")
+                .issue_url("https://github.com/vitao-al/linux-hw-monitor/issues")
                 .transient_for(&about_parent)
                 .build();
             about.present();

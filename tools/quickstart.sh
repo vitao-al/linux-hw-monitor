@@ -4,8 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-APP_ID="io.github.usuario.LinuxHWMonitor"
-MANIFEST="${PROJECT_ROOT}/flatpak/io.github.usuario.LinuxHWMonitor.yml"
+APP_ID="io.github.vitao_al.linux-hw-monitor"
+MANIFEST="${PROJECT_ROOT}/flatpak/io.github.vitao_al.linux-hw-monitor.yml"
 BUILD_DIR="${PROJECT_ROOT}/build-flatpak"
 STATE_DIR="${PROJECT_ROOT}/.flatpak-state"
 TMP_MANIFEST="${PROJECT_ROOT}/.flatpak.manifest.autogen.yml"

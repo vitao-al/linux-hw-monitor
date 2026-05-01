@@ -50,12 +50,12 @@ custom_target(
   install_dir: get_option('libexecdir')
 )
 
-install_data('data/io.github.usuario.LinuxHWMonitor.desktop', install_dir: get_option('datadir') / 'applications')
-install_data('data/io.github.usuario.LinuxHWMonitor.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
-install_data('data/io.github.usuario.LinuxHWMonitor.gschema.xml', install_dir: get_option('datadir') / 'glib-2.0' / 'schemas')
-install_data('data/io.github.usuario.LinuxHWMonitor.policy', install_dir: get_option('datadir') / 'polkit-1' / 'actions')
-install_data('data/icons/hicolor/scalable/apps/io.github.usuario.LinuxHWMonitor.svg', install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps')
-install_data('data/icons/hicolor/symbolic/apps/io.github.usuario.LinuxHWMonitor-symbolic.svg', install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'symbolic' / 'apps')
+install_data('data/io.github.vitao_al.linux-hw-monitor.desktop', install_dir: get_option('datadir') / 'applications')
+install_data('data/io.github.vitao_al.linux-hw-monitor.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
+install_data('data/io.github.vitao_al.linux-hw-monitor.gschema.xml', install_dir: get_option('datadir') / 'glib-2.0' / 'schemas')
+install_data('data/io.github.vitao_al.linux-hw-monitor.policy', install_dir: get_option('datadir') / 'polkit-1' / 'actions')
+install_data('data/icons/hicolor/scalable/apps/io.github.vitao_al.linux-hw-monitor.svg', install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps')
+install_data('data/icons/hicolor/symbolic/apps/io.github.vitao_al.linux-hw-monitor-symbolic.svg', install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'symbolic' / 'apps')
 
 # ── Translations ──────────────────────────────────────────────────────────────
 i18n = import('i18n')

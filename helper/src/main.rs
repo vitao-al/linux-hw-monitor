@@ -5,7 +5,7 @@ use zbus::interface;
 
 struct Helper;
 
-#[interface(name = "io.github.usuario.LinuxHWMonitor.Helper")]
+#[interface(name = "io.github.vitao_al.linux-hw-monitor.Helper")]
 impl Helper {
     async fn get_smart_data(&self, device: &str) -> String {
         run_json_command("smartctl", &["-j", "-A", device])
@@ -44,8 +44,8 @@ fn run_json_command(cmd: &str, args: &[&str]) -> String {
 #[tokio::main]
 async fn main() -> zbus::Result<()> {
     let _connection = zbus::ConnectionBuilder::system()?
-        .name("io.github.usuario.LinuxHWMonitor.Helper")?
-        .serve_at("/io/github/usuario/LinuxHWMonitor/Helper", Helper)?
+        .name("io.github.vitao_al.linux-hw-monitor.Helper")?
+        .serve_at("/io/github/vitao_al/linux_hw_monitor/Helper", Helper)?
         .build()
         .await?;
 

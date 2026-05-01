@@ -3,8 +3,8 @@
  "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
 <policyconfig>
   <vendor>LinuxHWMonitor</vendor>
-  <vendor_url>https://github.com/usuario/linux-hw-monitor</vendor_url>
-  <action id="io.github.usuario.LinuxHWMonitor.helper.exec">
+  <vendor_url>https://github.com/vitao-al/linux-hw-monitor</vendor_url>
+  <action id="io.github.vitao_al.linux-hw-monitor.helper.exec">
     <description>Run LinuxHWMonitor privileged helper</description>
     <message>Authentication is required to read SMART and DMI data.</message>
     <defaults>

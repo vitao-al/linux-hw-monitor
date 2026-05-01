@@ -36,12 +36,12 @@ Linux HW Monitor monitora sensores, CPU/GPU, memoria, discos e rede em tempo rea
 %license LICENSE
 %{_bindir}/linux-hw-monitor
 %{_libexecdir}/linux-hw-monitor-helper
-%{_datadir}/applications/io.github.usuario.LinuxHWMonitor.desktop
-%{_datadir}/metainfo/io.github.usuario.LinuxHWMonitor.appdata.xml
-%{_datadir}/polkit-1/actions/io.github.usuario.LinuxHWMonitor.policy
-%{_datadir}/glib-2.0/schemas/io.github.usuario.LinuxHWMonitor.gschema.xml
-%{_datadir}/icons/hicolor/scalable/apps/io.github.usuario.LinuxHWMonitor.svg
-%{_datadir}/icons/hicolor/symbolic/apps/io.github.usuario.LinuxHWMonitor-symbolic.svg
+%{_datadir}/applications/io.github.vitao_al.linux-hw-monitor.desktop
+%{_datadir}/metainfo/io.github.vitao_al.linux-hw-monitor.appdata.xml
+%{_datadir}/polkit-1/actions/io.github.vitao_al.linux-hw-monitor.policy
+%{_datadir}/glib-2.0/schemas/io.github.vitao_al.linux-hw-monitor.gschema.xml
+%{_datadir}/icons/hicolor/scalable/apps/io.github.vitao_al.linux-hw-monitor.svg
+%{_datadir}/icons/hicolor/symbolic/apps/io.github.vitao_al.linux-hw-monitor-symbolic.svg
 
 %changelog
 * Thu May 01 2026 vitao-al <vitao@example.com> - 1.0.0-1

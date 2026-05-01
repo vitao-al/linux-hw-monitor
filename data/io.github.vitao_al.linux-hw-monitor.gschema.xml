@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="io.github.usuario.LinuxHWMonitor" path="/io/github/usuario/LinuxHWMonitor/">
+  <schema id="io.github.vitao_al.linux-hw-monitor" path="/io/github/vitao_al/linux_hw_monitor/">
     <key name="update-interval" type="u">
       <default>1</default>
       <summary>Update interval in seconds</summary>

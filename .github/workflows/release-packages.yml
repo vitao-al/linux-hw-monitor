@@ -41,14 +41,14 @@ jobs:
       - name: Build flatpak bundle
         run: |
           set -euo pipefail
-          flatpak-builder --force-clean --repo=repo build-flatpak flatpak/io.github.usuario.LinuxHWMonitor.yml
-          flatpak build-bundle repo io.github.usuario.LinuxHWMonitor.flatpak io.github.usuario.LinuxHWMonitor
+          flatpak-builder --force-clean --repo=repo build-flatpak flatpak/io.github.vitao_al.linux-hw-monitor.yml
+          flatpak build-bundle repo io.github.vitao_al.linux-hw-monitor.flatpak io.github.vitao_al.linux-hw-monitor
 
       - name: Upload flatpak artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-hw-monitor-flatpak
-          path: io.github.usuario.LinuxHWMonitor.flatpak
+          path: io.github.vitao_al.linux-hw-monitor.flatpak
 
   snap:
     name: Build Snap package

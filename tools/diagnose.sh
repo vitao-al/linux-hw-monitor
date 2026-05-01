@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_ID="io.github.usuario.LinuxHWMonitor"
+APP_ID="io.github.vitao_al.linux-hw-monitor"
 
 section() {
   printf "\n== %s ==\n" "$1"
@@ -48,7 +48,7 @@ else
   echo "Cargo.toml not found"
 fi
 
-if [[ -f "flatpak/io.github.usuario.LinuxHWMonitor.yml" ]]; then
+if [[ -f "flatpak/io.github.vitao_al.linux-hw-monitor.yml" ]]; then
   echo "Flatpak manifest found"
 else
   echo "Flatpak manifest not found"

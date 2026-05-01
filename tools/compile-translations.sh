@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-APP_ID="io.github.usuario.LinuxHWMonitor"
+APP_ID="io.github.vitao_al.linux-hw-monitor"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 PO_DIR="${REPO_ROOT}/po"

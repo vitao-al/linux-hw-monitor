@@ -12,7 +12,7 @@ confinement: classic
 apps:
   linux-hw-monitor:
     command: usr/bin/linux-hw-monitor
-    desktop: usr/share/applications/io.github.usuario.LinuxHWMonitor.desktop
+    desktop: usr/share/applications/io.github.vitao_al.linux-hw-monitor.desktop
     environment:
       GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
 

@@ -1,3 +1,3 @@
-i18n.gettext('io.github.usuario.LinuxHWMonitor',
+i18n.gettext('io.github.vitao_al.linux-hw-monitor',
   args: ['--directory=' + meson.project_source_root()],
 )
