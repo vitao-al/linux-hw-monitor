@@ -23,5 +23,19 @@
   <releases>
     <release version="1.0.0" date="2026-04-26"/>
   </releases>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/vitao-al/linux-hw-monitor/main/data/assets/1.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/vitao-al/linux-hw-monitor/main/data/assets/2.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/vitao-al/linux-hw-monitor/main/data/assets/3.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/vitao-al/linux-hw-monitor/main/data/assets/4.png</image>
+    </screenshot>
+  </screenshots>
   <content_rating type="oars-1.1"/>
 </component>
