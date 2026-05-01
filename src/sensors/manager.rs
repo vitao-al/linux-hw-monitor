@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::sync::{Arc, RwLock};
 use std::thread;
 
@@ -52,6 +52,7 @@ impl SensorManager {
                 let mut cpu = CpuSensor::default();
                 let mut storage = StorageSensor::default();
                 let mut network = NetworkSensor::default();
+                let mut history_cache: HashMap<String, VecDeque<f64>> = HashMap::new();
 
                 loop {
                     ticker.tick().await;
@@ -63,7 +64,7 @@ impl SensorManager {
                     };
 
                     let path_cfg = &config.path_config;
-                    let groups: Vec<SensorGroup> = vec![
+                    let mut groups: Vec<SensorGroup> = vec![
                         cpu.collect(path_cfg),
                         GpuSensor::collect(path_cfg),
                         MemorySensor::collect(path_cfg),
@@ -73,6 +74,10 @@ impl SensorManager {
                         FansSensor::collect(path_cfg),
                         MotherboardSensor::collect(path_cfg),
                     ];
+
+                    for group in &mut groups {
+                        merge_sensor_history(group, "", &mut history_cache);
+                    }
 
                     data.groups = groups;
 
@@ -118,6 +123,28 @@ impl SensorManager {
             out.push('\n');
         }
         out
+    }
+}
+
+fn merge_sensor_history(group: &mut SensorGroup, path: &str, cache: &mut HashMap<String, VecDeque<f64>>) {
+    let group_path = if path.is_empty() {
+        group.id.clone()
+    } else {
+        format!("{}/{}", path, group.id)
+    };
+
+    for (idx, sensor) in group.sensors.iter_mut().enumerate() {
+        let key = format!("{}/{}/{}", group_path, idx, sensor.label);
+        let history = cache.entry(key).or_default();
+        if history.len() == 60 {
+            let _ = history.pop_front();
+        }
+        history.push_back(sensor.value);
+        sensor.history = history.clone();
+    }
+
+    for subgroup in &mut group.subgroups {
+        merge_sensor_history(subgroup, &group_path, cache);
     }
 }
 
