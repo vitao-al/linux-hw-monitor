@@ -19,9 +19,11 @@ custom_target(
     'sh',
     '-c',
     ' '.join([
+      'cd "' + meson.project_source_root() + '" &&',
       cargo.full_path(),
       ' '.join(cargo_args),
-      '&& cp target/' + target_dir + '/linux-hw-monitor @OUTPUT@'
+      '--manifest-path Cargo.toml',
+      '&& cp "' + meson.project_source_root() + '/target/' + target_dir + '/linux-hw-monitor" "@OUTDIR@/linux-hw-monitor"'
     ])
   ],
   build_by_default: true,
@@ -35,10 +37,12 @@ custom_target(
   command: [
     'sh',
     '-c',
-    'cd helper && ' + ' '.join([
+    ' '.join([
+      'cd "' + meson.project_source_root() + '" &&',
       cargo.full_path(),
       ' '.join(cargo_args),
-      '&& cp target/' + target_dir + '/linux-hw-monitor-helper @OUTPUT@'
+      '--manifest-path helper/Cargo.toml',
+      '&& cp "' + meson.project_source_root() + '/helper/target/' + target_dir + '/linux-hw-monitor-helper" "@OUTDIR@/linux-hw-monitor-helper"'
     ])
   ],
   build_by_default: true,

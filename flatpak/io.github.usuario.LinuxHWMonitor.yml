@@ -1,6 +1,6 @@
 app-id: io.github.usuario.LinuxHWMonitor
 runtime: org.gnome.Platform
-runtime-version: '46'
+runtime-version: '47'
 sdk: org.gnome.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
@@ -38,6 +38,5 @@ modules:
     config-opts:
       - -Dprofile=release
     sources:
-      - type: git
-        url: https://github.com/usuario/linux-hw-monitor
-        tag: v1.0.0
+      - type: dir
+        path: ..
