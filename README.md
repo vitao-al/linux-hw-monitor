@@ -117,6 +117,52 @@ make flatpak-clean
 
 Esse comando remove apenas diretórios temporários de build (`.flatpak-builder`, `.flatpak-state` e `build-flatpak`) e recria `build-flatpak` vazia.
 
+## Publicacao em lojas Linux
+
+Este repositório agora inclui base de empacotamento para os principais canais Linux:
+
+- Flatpak/Flathub: `packaging/flathub/io.github.usuario.LinuxHWMonitor.flathub.yml`
+- Snap Store: `packaging/snap/snapcraft.yaml`
+- AUR (Arch): `packaging/aur/PKGBUILD`
+- RPM/COPR (Fedora/openSUSE): `packaging/rpm/linux-hw-monitor.spec`
+- CI de release: `.github/workflows/release-packages.yml`
+
+### Como publicar por canal
+
+1. Crie uma tag semantica:
+
+```bash
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+2. O workflow de release gera artefatos de distribuicao (tarball, flatpak bundle, snap).
+
+3. Envie para cada loja:
+
+- Flathub: abra PR no repositório Flathub com o manifesto em `packaging/flathub/`.
+- Snap Store: execute `snapcraft upload --release=stable <arquivo.snap>` usando token da loja.
+- AUR: publique o `PKGBUILD` em um repositório AUR (`linux-hw-monitor`).
+- COPR: use o `.spec` em `packaging/rpm/` para criar build automático por tag.
+
+## Icone na grade de aplicativos
+
+O projeto instala:
+
+- Desktop file: `data/io.github.usuario.LinuxHWMonitor.desktop`
+- Icone principal: `data/icons/hicolor/scalable/apps/io.github.usuario.LinuxHWMonitor.svg`
+- Icone simbolico: `data/icons/hicolor/symbolic/apps/io.github.usuario.LinuxHWMonitor-symbolic.svg`
+
+O script de pos-instalacao atualiza schemas, cache de desktop e cache de icones (`gtk-update-icon-cache`), garantindo aparicao na grade de apps do SO apos instalacao por pacote.
+
+## Dependencias e atualizacoes automaticas
+
+- Flatpak: runtime + dependencias resolvidas pelo Flatpak e atualizacao automatica via loja/`flatpak update`.
+- Snap: dependencias resolvidas no pacote Snap e atualizacao automatica via snapd.
+- AUR/RPM: dependencias declaradas no pacote; atualizacao via gerenciador da distro (`yay/pacman`, `dnf`, `zypper`, etc).
+
+Nao existe um mecanismo universal de "auto update" para todas as distros fora das lojas. O caminho recomendado e distribuir por lojas/repositorios para herdar o ciclo de atualizacao nativo de cada sistema.
+
 ## Testes
 
 ```bash

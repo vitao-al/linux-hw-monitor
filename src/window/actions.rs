@@ -31,25 +31,32 @@ pub(crate) fn install_actions(app: &adw::Application, manager: Rc<SensorManager>
 }
 
 fn save_with_dialog(parent: &adw::ApplicationWindow, suggested_name: &str, contents: String) {
-    let dialog = gtk::FileChooserNative::builder()
-        .title("Export data")
-        .transient_for(parent)
-        .action(gtk::FileChooserAction::Save)
-        .accept_label("Save")
-        .cancel_label("Cancel")
+    let dialog = gtk::FileDialog::builder()
+        .title("Exportar dados")
+        .initial_name(suggested_name)
+        .modal(true)
         .build();
-    dialog.set_current_name(suggested_name);
 
-    dialog.connect_response(move |dlg, response| {
-        if response == gtk::ResponseType::Accept {
-            if let Some(file) = dlg.file() {
+    let parent_weak = parent.downgrade();
+    dialog.save(
+        parent_weak.upgrade().as_ref(),
+        None::<&gio::Cancellable>,
+        move |result| {
+            if let Ok(file) = result {
                 if let Some(path) = file.path() {
-                    let _ = std::fs::write(path, &contents);
+                    if let Err(e) = std::fs::write(&path, &contents) {
+                        // Show an error toast/dialog if write fails.
+                        if let Some(win) = parent_weak.upgrade() {
+                            let alert = adw::AlertDialog::builder()
+                                .heading("Falha ao salvar")
+                                .body(&format!("Não foi possível salvar em {:?}:\n{}", path, e))
+                                .build();
+                            alert.add_response("ok", "OK");
+                            alert.present(&win);
+                        }
+                    }
                 }
             }
-        }
-        dlg.destroy();
-    });
-
-    dialog.show();
+        },
+    );
 }

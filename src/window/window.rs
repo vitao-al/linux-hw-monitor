@@ -150,6 +150,103 @@ impl MainWindow {
         toolbar.add_top_bar(&header);
         toolbar.set_content(Some(&view_stack));
 
+        // ── Language switcher — bottom-left ───────────────────────────────
+        let lang_btn = gtk::MenuButton::builder()
+            .icon_name("preferences-desktop-locale-symbolic")
+            .tooltip_text(&t("Language"))
+            .build();
+        lang_btn.add_css_class("flat");
+
+        let lang_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        lang_box.set_margin_start(6);
+        lang_box.set_margin_end(6);
+        lang_box.set_margin_top(4);
+        lang_box.set_margin_bottom(4);
+        lang_box.append(&lang_btn);
+
+        let lang_filler = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        lang_filler.set_hexpand(true);
+        let bottom_bar = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        bottom_bar.set_hexpand(true);
+        bottom_bar.append(&lang_box);
+        bottom_bar.append(&lang_filler);
+        bottom_bar.add_css_class("toolbar");
+        toolbar.add_bottom_bar(&bottom_bar);
+
+        // Popover content: list of available languages.
+        let lang_list = gtk::ListBox::new();
+        lang_list.add_css_class("boxed-list-separate");
+        lang_list.set_selection_mode(gtk::SelectionMode::None);
+
+        let languages: &[(&str, &str, &str)] = &[
+            ("pt_BR", "🇧🇷", "Português (Brasil)"),
+            ("en",    "🇺🇸", "English"),
+            ("es",    "🇪🇸", "Español"),
+            ("fr",    "🇫🇷", "Français"),
+            ("de",    "🇩🇪", "Deutsch"),
+            ("it",    "🇮🇹", "Italiano"),
+            ("ru",    "🇷🇺", "Русский"),
+            ("zh_CN", "🇨🇳", "中文 (简体)"),
+            ("ja",    "🇯🇵", "日本語"),
+            ("ko",    "🇰🇷", "한국어"),
+        ];
+
+        let current_lang = std::env::var("LANGUAGE")
+            .or_else(|_| std::env::var("LANG"))
+            .unwrap_or_default();
+
+        for (locale, flag, name) in languages {
+            let row_box = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+            row_box.set_margin_start(8);
+            row_box.set_margin_end(8);
+            row_box.set_margin_top(6);
+            row_box.set_margin_bottom(6);
+
+            let flag_lbl = gtk::Label::new(Some(flag));
+            let name_lbl = gtk::Label::new(Some(name));
+            name_lbl.set_hexpand(true);
+            name_lbl.set_xalign(0.0);
+
+            // Check mark for current language.
+            let check = gtk::Image::from_icon_name("emblem-ok-symbolic");
+            check.set_visible(current_lang.starts_with(locale));
+
+            row_box.append(&flag_lbl);
+            row_box.append(&name_lbl);
+            row_box.append(&check);
+
+            let row = gtk::ListBoxRow::new();
+            row.set_child(Some(&row_box));
+            row.set_widget_name(locale);
+            lang_list.append(&row);
+        }
+
+        let lang_scroll = gtk::ScrolledWindow::builder()
+            .child(&lang_list)
+            .max_content_height(380)
+            .propagate_natural_height(true)
+            .propagate_natural_width(true)
+            .build();
+        lang_scroll.set_size_request(240, -1);
+
+        let lang_popover = gtk::Popover::new();
+        lang_popover.set_child(Some(&lang_scroll));
+        lang_popover.set_position(gtk::PositionType::Top);
+        lang_btn.set_popover(Some(&lang_popover));
+
+        lang_list.connect_row_activated(move |_, row| {
+            let locale = row.widget_name().to_string();
+            // Persist the chosen language for next launch and restart now.
+            unsafe {
+                std::env::set_var("LANGUAGE", &locale);
+            }
+            if let Ok(exe) = std::env::current_exe() {
+                let _ = std::process::Command::new(exe).spawn();
+            }
+            std::process::exit(0);
+        });
+        // ─────────────────────────────────────────────────────────────────
+
         let window = adw::ApplicationWindow::builder()
             .application(app)
 .title(&t("Linux HW Monitor"))

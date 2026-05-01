@@ -223,7 +223,7 @@ fn build_app_column_header() -> gtk::Box {
         ("Mem MB",   false, 68),
         ("Estado",   false, 80),
         ("Nice",     false, 48),
-        ("Acoes",    false, 160),
+        ("Acoes",    false, 72),
     ];
 
     for (label, expand, min_w) in cols {
@@ -241,6 +241,10 @@ fn build_app_column_header() -> gtk::Box {
         if let Some(lbl) = btn.child().and_downcast::<gtk::Label>() {
             lbl.set_xalign(0.0);
             lbl.add_css_class("dim-label");
+            // Data rows include a 16px icon + 6px margin in first column.
+            if *label == "Processo" {
+                lbl.set_margin_start(22);
+            }
         }
         btn.set_widget_name(label);
         row.append(&btn);
@@ -358,7 +362,7 @@ fn build_app_row(
     line.set_margin_start(8);
     line.set_margin_end(8);
 
-    let icon_name = app_icon_for_process(&proc.name);
+    let icon_name = app_icon_for_process(&proc.name, proc.pid);
     let icon = gtk::Image::from_icon_name(&icon_name);
     icon.set_pixel_size(16);
     icon.set_margin_end(6);
@@ -378,37 +382,57 @@ fn build_app_row(
 
     let user_lbl  = gtk::Label::new(Some(&proc.user));
     user_lbl.set_xalign(0.0);
-    user_lbl.set_width_chars(10);
+    user_lbl.set_size_request(90, -1);
     user_lbl.set_ellipsize(gtk::pango::EllipsizeMode::End);
 
     let pid_lbl   = make_mono(&proc.pid.to_string(), 7);
+    pid_lbl.set_size_request(60, -1);
     let cpu_lbl   = make_mono(&format!("{:.1}%", proc.cpu), 6);
+    cpu_lbl.set_size_request(64, -1);
     let mem_lbl   = make_mono(&format!("{:.1}%", proc.mem), 6);
+    mem_lbl.set_size_request(60, -1);
     let memb_lbl  = make_mono(&format!("{:.0}", proc.mem_mb), 7);
+    memb_lbl.set_size_request(68, -1);
 
     let state_lbl = gtk::Label::new(Some(&proc.state));
-    state_lbl.set_width_chars(10);
+    state_lbl.set_size_request(80, -1);
     state_lbl.set_xalign(0.5);
     apply_proc_state_css(&state_lbl, &proc.state);
 
     let nice_lbl  = make_mono(&proc.nice.to_string(), 4);
+    nice_lbl.set_size_request(48, -1);
     nice_lbl.set_xalign(0.5);
 
-    // action buttons
-    let btn_box = gtk::Box::new(gtk::Orientation::Horizontal, 4);
-    btn_box.set_margin_start(8);
+    // action menu button
+    let action_btn = gtk::MenuButton::builder()
+        .icon_name("view-more-symbolic")
+        .tooltip_text(&t("Actions"))
+        .build();
+    action_btn.add_css_class("flat");
+    action_btn.set_size_request(72, -1);
+    action_btn.set_halign(gtk::Align::Center);
+    action_btn.set_margin_start(8);
+
+    let action_pop = gtk::Popover::new();
+    let action_box = gtk::Box::new(gtk::Orientation::Vertical, 6);
+    action_box.set_margin_top(8);
+    action_box.set_margin_bottom(8);
+    action_box.set_margin_start(8);
+    action_box.set_margin_end(8);
+
     let kill_btn = gtk::Button::builder()
         .label(&t("Terminate"))
-        .css_classes(["destructive-action", "pill"])
+        .css_classes(["destructive-action"])
         .tooltip_text(&t("Send SIGTERM to process"))
         .build();
     let force_btn = gtk::Button::builder()
         .label(&t("Force Kill"))
-        .css_classes(["pill"])
         .tooltip_text(&t("Send SIGKILL (immediate force)"))
         .build();
-    btn_box.append(&kill_btn);
-    btn_box.append(&force_btn);
+    action_box.append(&kill_btn);
+    action_box.append(&force_btn);
+    action_pop.set_child(Some(&action_box));
+    action_btn.set_popover(Some(&action_pop));
 
     line.append(&icon);
     line.append(&name_lbl);
@@ -419,11 +443,16 @@ fn build_app_row(
     line.append(&memb_lbl);
     line.append(&state_lbl);
     line.append(&nice_lbl);
-    line.append(&btn_box);
+    line.append(&action_btn);
     row.set_child(Some(&line));
 
     wire_process_action(&kill_btn,  proc.pid, false, list, summary, filter_text, sort_state);
     wire_process_action(&force_btn, proc.pid, true,  list, summary, filter_text, sort_state);
+
+    let pop_kill = action_pop.clone();
+    kill_btn.connect_clicked(move |_| pop_kill.popdown());
+    let pop_force = action_pop.clone();
+    force_btn.connect_clicked(move |_| pop_force.popdown());
 
     row
 }
@@ -641,12 +670,17 @@ fn build_svc_column_header() -> gtk::Box {
     row.set_margin_top(4);
     row.set_margin_bottom(2);
 
+    // Reserve the same width used by service row icon (16) + gap (6).
+    let icon_spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    icon_spacer.set_size_request(22, -1);
+    row.append(&icon_spacer);
+
     let cols: &[(&str, bool, i32)] = &[
         ("Service",     true,  0),
         ("Status",      false, 85),
         ("Sub-state",   false, 95),
         ("Description", true,  0),
-        ("Actions",     false, 200),
+        ("Actions",     false, 72),
     ];
 
     for (label, expand, min_w) in cols {
@@ -792,22 +826,34 @@ fn build_svc_row(
     unit_lbl.set_ellipsize(gtk::pango::EllipsizeMode::End);
 
     let status_lbl = gtk::Label::new(Some(&svc.active));
-    status_lbl.set_width_chars(10);
-    status_lbl.set_xalign(0.5);
+    status_lbl.set_size_request(85, -1);
+    status_lbl.set_xalign(0.0);
     apply_service_active_css(&status_lbl, &svc.active);
 
     let sub_lbl = gtk::Label::new(Some(&svc.sub));
-    sub_lbl.set_width_chars(11);
-    sub_lbl.set_xalign(0.5);
+    sub_lbl.set_size_request(95, -1);
+    sub_lbl.set_xalign(0.0);
 
     let desc_lbl = gtk::Label::new(Some(&svc.description));
     desc_lbl.set_xalign(0.0);
     desc_lbl.set_hexpand(true);
     desc_lbl.set_ellipsize(gtk::pango::EllipsizeMode::End);
 
-    // action buttons
-    let btn_box = gtk::Box::new(gtk::Orientation::Horizontal, 4);
-    btn_box.set_margin_start(8);
+    // action menu button
+    let action_btn = gtk::MenuButton::builder()
+        .icon_name("view-more-symbolic")
+        .tooltip_text(&t("Actions"))
+        .build();
+    action_btn.add_css_class("flat");
+    action_btn.set_size_request(72, -1);
+    action_btn.set_halign(gtk::Align::Center);
+
+    let action_pop = gtk::Popover::new();
+    let action_box = gtk::Box::new(gtk::Orientation::Vertical, 6);
+    action_box.set_margin_top(8);
+    action_box.set_margin_bottom(8);
+    action_box.set_margin_start(8);
+    action_box.set_margin_end(8);
 
     let is_running = svc.active == "active" || svc.sub == "running";
     let is_user = svc.unit.ends_with(" (user)");
@@ -832,21 +878,30 @@ fn build_svc_row(
         .tooltip_text("systemctl restart")
         .build();
 
-    btn_box.append(&start_btn);
-    btn_box.append(&stop_btn);
-    btn_box.append(&restart_btn);
+    action_box.append(&start_btn);
+    action_box.append(&stop_btn);
+    action_box.append(&restart_btn);
+    action_pop.set_child(Some(&action_box));
+    action_btn.set_popover(Some(&action_pop));
 
     line.append(&icon);
     line.append(&unit_lbl);
     line.append(&status_lbl);
     line.append(&sub_lbl);
     line.append(&desc_lbl);
-    line.append(&btn_box);
+    line.append(&action_btn);
     row.set_child(Some(&line));
 
     wire_svc_action(&start_btn,   &svc.unit, "start",   is_user, list, summary, filter_text, sort_state, show_all);
     wire_svc_action(&stop_btn,    &svc.unit, "stop",    is_user, list, summary, filter_text, sort_state, show_all);
     wire_svc_action(&restart_btn, &svc.unit, "restart", is_user, list, summary, filter_text, sort_state, show_all);
+
+    let pop_start = action_pop.clone();
+    start_btn.connect_clicked(move |_| pop_start.popdown());
+    let pop_stop = action_pop.clone();
+    stop_btn.connect_clicked(move |_| pop_stop.popdown());
+    let pop_restart = action_pop.clone();
+    restart_btn.connect_clicked(move |_| pop_restart.popdown());
 
     row
 }

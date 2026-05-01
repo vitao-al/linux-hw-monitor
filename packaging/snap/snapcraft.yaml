@@ -1,0 +1,43 @@
+name: linux-hw-monitor
+base: core24
+version: '1.0.0'
+summary: Linux hardware monitor built with Rust + GTK4
+description: |
+  Linux HW Monitor monitora CPU, GPU, memoria, discos e sensores em tempo real,
+  com exportacao de dados e gerenciamento basico de processos/servicos.
+
+grade: stable
+confinement: classic
+
+apps:
+  linux-hw-monitor:
+    command: usr/bin/linux-hw-monitor
+    desktop: usr/share/applications/io.github.usuario.LinuxHWMonitor.desktop
+    environment:
+      GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
+
+parts:
+  linux-hw-monitor:
+    plugin: meson
+    source: ../..
+    meson-parameters:
+      - -Dprofile=release
+    build-packages:
+      - build-essential
+      - meson
+      - ninja-build
+      - pkg-config
+      - rustc
+      - cargo
+      - libgtk-4-dev
+      - libadwaita-1-dev
+      - libglib2.0-dev
+      - libpango1.0-dev
+      - libcairo2-dev
+    stage-packages:
+      - libgtk-4-1
+      - libadwaita-1-0
+      - libglib2.0-0
+      - libpango-1.0-0
+      - libcairo2
+      - shared-mime-info

@@ -1,0 +1,22 @@
+pkgname=linux-hw-monitor
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Linux hardware monitor (Rust + GTK4 + libadwaita)"
+arch=('x86_64' 'aarch64')
+url="https://github.com/vitao-al/linux-hw-monitor"
+license=('MIT')
+depends=('gtk4' 'libadwaita' 'glib2' 'hicolor-icon-theme')
+makedepends=('rust' 'cargo' 'meson' 'ninja' 'pkgconf')
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/vitao-al/linux-hw-monitor/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  meson setup builddir -Dprofile=release --prefix=/usr
+  meson compile -C builddir
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  meson install -C builddir --destdir "${pkgdir}"
+}

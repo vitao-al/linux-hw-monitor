@@ -1,0 +1,19 @@
+Title: Add io.github.usuario.LinuxHWMonitor
+
+This PR adds Linux HW Monitor, a GTK4/libadwaita hardware monitor for Linux.
+
+Upstream: https://github.com/vitao-al/linux-hw-monitor
+License: MIT
+Current release: v1.0.0
+
+Features:
+- Real-time CPU/GPU/memory/disk/network sensor monitoring
+- Export to CSV/JSON/TXT
+- Process and service management pages
+
+Notes:
+- App ID is io.github.usuario.LinuxHWMonitor
+- Source is immutable release tarball with sha256
+- Runtime: org.gnome.Platform//47
+
+Maintainer: @vitao-al

@@ -1,0 +1,88 @@
+name: Release Linux Packages
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  source-tarball:
+    name: Build source tarball
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build source tarball
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          git archive --format=tar.gz --prefix="linux-hw-monitor-${VERSION}/" -o "linux-hw-monitor-${VERSION}.tar.gz" "${GITHUB_REF_NAME}"
+
+      - name: Upload tarball artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-hw-monitor-source
+          path: linux-hw-monitor-*.tar.gz
+
+  flatpak-bundle:
+    name: Build Flatpak bundle
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/flathub/flatpak-builder-lint:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build flatpak bundle
+        run: |
+          set -euo pipefail
+          flatpak-builder --force-clean --repo=repo build-flatpak flatpak/io.github.usuario.LinuxHWMonitor.yml
+          flatpak build-bundle repo io.github.usuario.LinuxHWMonitor.flatpak io.github.usuario.LinuxHWMonitor
+
+      - name: Upload flatpak artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-hw-monitor-flatpak
+          path: io.github.usuario.LinuxHWMonitor.flatpak
+
+  snap:
+    name: Build Snap package
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup snapcraft
+        uses: snapcore/action-build@v1
+        id: snapcraft
+        with:
+          path: packaging/snap
+
+      - name: Upload snap artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-hw-monitor-snap
+          path: ${{ steps.snapcraft.outputs.snap }}
+
+  github-release:
+    name: Publish release artifacts
+    needs: [source-tarball, flatpak-bundle, snap]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Publish GitHub release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/linux-hw-monitor-source/*.tar.gz
+            artifacts/linux-hw-monitor-flatpak/*.flatpak
+            artifacts/linux-hw-monitor-snap/*.snap

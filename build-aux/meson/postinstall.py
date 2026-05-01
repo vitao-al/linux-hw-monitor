@@ -9,5 +9,12 @@ datadir = os.path.join(prefix, 'share')
 if not os.environ.get('DESTDIR'):
     subprocess.call(['glib-compile-schemas', os.path.join(datadir, 'glib-2.0', 'schemas')])
     subprocess.call(['update-desktop-database', os.path.join(datadir, 'applications')])
+    subprocess.call([
+        'gtk-update-icon-cache',
+        '-q',
+        '-t',
+        '-f',
+        os.path.join(datadir, 'icons', 'hicolor')
+    ])
 
 sys.exit(0)

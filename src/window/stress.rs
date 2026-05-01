@@ -127,10 +127,18 @@ pub struct StressReport {
     pub duration_secs: u64,
     pub peak_cpu_temp_c: f64,
     pub peak_gpu_temp_c: f64,
+    pub peak_cpu_freq_mhz: f64,
+    pub avg_cpu_freq_mhz: Option<f64>,
     pub thermal_throttling_detected: bool,
     pub rapl_energy_uj_start: Option<u64>,
     pub rapl_energy_uj_end: Option<u64>,
+    pub start_mem_available_mb: Option<u64>,
+    pub end_mem_available_mb: Option<u64>,
+    pub min_mem_available_mb: Option<u64>,
+    pub load_avg_1m: Option<f64>,
     pub stopped_by_watchdog: bool,
+    pub stopped_manually: bool,
+    pub exit_code: Option<i32>,
     pub error: Option<String>,
 }
 
@@ -160,10 +168,19 @@ struct RunnerState {
     start: Option<Instant>,
     peak_cpu_temp: f64,
     peak_gpu_temp: f64,
+    peak_cpu_freq_mhz: f64,
+    cpu_freq_sum_mhz: f64,
+    cpu_freq_samples: u64,
     prev_cpu_freq_mhz: f64,
     throttle_samples_below: u32,
     rapl_start: Option<u64>,
+    start_mem_available_kb: Option<u64>,
+    end_mem_available_kb: Option<u64>,
+    min_mem_available_kb: Option<u64>,
+    load_avg_1m: Option<f64>,
     stopped_by_watchdog: bool,
+    stopped_manually: bool,
+    exit_code: Option<i32>,
     last_report: Option<StressReport>,
 }
 
@@ -175,10 +192,19 @@ impl RunnerState {
             start: None,
             peak_cpu_temp: 0.0,
             peak_gpu_temp: 0.0,
+            peak_cpu_freq_mhz: 0.0,
+            cpu_freq_sum_mhz: 0.0,
+            cpu_freq_samples: 0,
             prev_cpu_freq_mhz: 0.0,
             throttle_samples_below: 0,
             rapl_start: None,
+            start_mem_available_kb: None,
+            end_mem_available_kb: None,
+            min_mem_available_kb: None,
+            load_avg_1m: None,
             stopped_by_watchdog: false,
+            stopped_manually: false,
+            exit_code: None,
             last_report: None,
         }
     }
@@ -231,6 +257,7 @@ impl StressRunner {
         let child = spawn_stress_process(method)?;
 
         let rapl_start = read_rapl_energy_uj();
+        let start_mem = read_meminfo_field("MemAvailable");
 
         {
             let mut st = self.state.lock().unwrap();
@@ -239,10 +266,19 @@ impl StressRunner {
             st.start = Some(Instant::now());
             st.peak_cpu_temp = 0.0;
             st.peak_gpu_temp = 0.0;
+            st.peak_cpu_freq_mhz = 0.0;
+            st.cpu_freq_sum_mhz = 0.0;
+            st.cpu_freq_samples = 0;
             st.prev_cpu_freq_mhz = 0.0;
             st.throttle_samples_below = 0;
             st.rapl_start = rapl_start;
+            st.start_mem_available_kb = start_mem;
+            st.end_mem_available_kb = None;
+            st.min_mem_available_kb = start_mem;
+            st.load_avg_1m = None;
             st.stopped_by_watchdog = false;
+            st.stopped_manually = false;
+            st.exit_code = None;
             st.last_report = None;
         }
         self.running.store(true, Ordering::SeqCst);
@@ -271,6 +307,22 @@ impl StressRunner {
                 if gpu_temp > st.peak_gpu_temp {
                     st.peak_gpu_temp = gpu_temp;
                 }
+                if cpu_freq > 0.0 {
+                    st.cpu_freq_sum_mhz += cpu_freq;
+                    st.cpu_freq_samples += 1;
+                    if cpu_freq > st.peak_cpu_freq_mhz {
+                        st.peak_cpu_freq_mhz = cpu_freq;
+                    }
+                }
+                let mem_available = read_meminfo_field("MemAvailable");
+                if let Some(mem_kb) = mem_available {
+                    st.min_mem_available_kb = Some(
+                        st.min_mem_available_kb
+                            .map(|v| v.min(mem_kb))
+                            .unwrap_or(mem_kb),
+                    );
+                }
+                st.load_avg_1m = read_loadavg_1m();
 
                 // Throttling detection: freq drops >10% from the initial reading.
                 if st.prev_cpu_freq_mhz > 0.0 && cpu_freq > 0.0 {
@@ -290,10 +342,11 @@ impl StressRunner {
                 if over_limit {
                     if let Some(child) = st.child.as_mut() {
                         let _ = child.kill();
-                        let _ = child.wait();
+                        st.exit_code = child.wait().ok().and_then(|s| s.code());
                     }
                     st.child = None;
                     st.stopped_by_watchdog = true;
+                    st.end_mem_available_kb = read_meminfo_field("MemAvailable");
                     let report = build_report(&st);
                     st.last_report = Some(report);
                     running_arc.store(false, Ordering::SeqCst);
@@ -302,8 +355,10 @@ impl StressRunner {
 
                 // Check if child finished naturally.
                 if let Some(child) = st.child.as_mut() {
-                    if let Ok(Some(_)) = child.try_wait() {
+                    if let Ok(Some(status)) = child.try_wait() {
+                        st.exit_code = status.code();
                         st.child = None;
+                        st.end_mem_available_kb = read_meminfo_field("MemAvailable");
                         let report = build_report(&st);
                         st.last_report = Some(report);
                         running_arc.store(false, Ordering::SeqCst);
@@ -323,10 +378,12 @@ impl StressRunner {
         }
         self.running.store(false, Ordering::SeqCst);
         let mut st = self.state.lock().unwrap();
+        st.stopped_manually = true;
         if let Some(mut child) = st.child.take() {
             let _ = child.kill();
-            let _ = child.wait();
+            st.exit_code = child.wait().ok().and_then(|s| s.code());
         }
+        st.end_mem_available_kb = read_meminfo_field("MemAvailable");
         let report = build_report(&st);
         st.last_report = Some(report.clone());
         Some(report)
@@ -367,15 +424,28 @@ fn build_report(st: &RunnerState) -> StressReport {
         .map(|s| s.elapsed().as_secs())
         .unwrap_or(0);
     let rapl_end = read_rapl_energy_uj();
+    let avg_cpu_freq_mhz = if st.cpu_freq_samples > 0 {
+        Some(st.cpu_freq_sum_mhz / st.cpu_freq_samples as f64)
+    } else {
+        None
+    };
     StressReport {
         method: st.method,
         duration_secs,
         peak_cpu_temp_c: st.peak_cpu_temp,
         peak_gpu_temp_c: st.peak_gpu_temp,
+        peak_cpu_freq_mhz: st.peak_cpu_freq_mhz,
+        avg_cpu_freq_mhz,
         thermal_throttling_detected: st.throttle_samples_below >= 3,
         rapl_energy_uj_start: st.rapl_start,
         rapl_energy_uj_end: rapl_end,
+        start_mem_available_mb: st.start_mem_available_kb.map(|k| k / 1024),
+        end_mem_available_mb: st.end_mem_available_kb.map(|k| k / 1024),
+        min_mem_available_mb: st.min_mem_available_kb.map(|k| k / 1024),
+        load_avg_1m: st.load_avg_1m,
         stopped_by_watchdog: st.stopped_by_watchdog,
+        stopped_manually: st.stopped_manually,
+        exit_code: st.exit_code,
         error: None,
     }
 }
@@ -394,8 +464,6 @@ fn spawn_stress_process(method: StressMethod) -> Result<Child, String> {
             &nproc.to_string(),
             "--cpu-method",
             "matrixprod",
-            "--timeout",
-            "0",
         ]),
         StressMethod::CpuPi => nice_cmd(&[
             "stress-ng",
@@ -403,8 +471,6 @@ fn spawn_stress_process(method: StressMethod) -> Result<Child, String> {
             &nproc.to_string(),
             "--cpu-method",
             "pi",
-            "--timeout",
-            "0",
         ]),
         StressMethod::CpuAvx => nice_cmd(&[
             "stress-ng",
@@ -412,8 +478,6 @@ fn spawn_stress_process(method: StressMethod) -> Result<Child, String> {
             &nproc.to_string(),
             "--cpu-method",
             "fpu",
-            "--timeout",
-            "0",
         ]),
         StressMethod::RamPattern => nice_cmd(&[
             "stress-ng",
@@ -423,8 +487,6 @@ fn spawn_stress_process(method: StressMethod) -> Result<Child, String> {
             "50%",
             "--vm-method",
             "write64",
-            "--timeout",
-            "0",
         ]),
         StressMethod::RamVm => nice_cmd(&[
             "stress-ng",
@@ -432,14 +494,19 @@ fn spawn_stress_process(method: StressMethod) -> Result<Child, String> {
             "2",
             "--vm-bytes",
             "75%",
-            "--timeout",
-            "0",
         ]),
         StressMethod::GpuGlmark2 => {
             // glmark2 does not accept nice easily via args; wrap in sh.
             check_tool("glmark2")?;
             Command::new("nice")
-                .args(["-n", "19", "glmark2", "--benchmark", "build:use-vbo=true"])
+                .args([
+                    "-n",
+                    "19",
+                    "glmark2",
+                    "--run-forever",
+                    "--benchmark",
+                    "build:use-vbo=true",
+                ])
                 .stdin(Stdio::null())
                 .stdout(Stdio::null())
                 .stderr(Stdio::null())
@@ -453,6 +520,7 @@ fn spawn_stress_process(method: StressMethod) -> Result<Child, String> {
                     "-n",
                     "19",
                     "glmark2",
+                    "--run-forever",
                     "--benchmark",
                     "terrain:tessellation=true",
                 ])
@@ -468,9 +536,10 @@ fn spawn_stress_process(method: StressMethod) -> Result<Child, String> {
             "--rw=readwrite",
             "--bs=4M",
             "--size=256M",
-            "--runtime=0",
+            "--runtime=86400",
             "--time_based",
             "--direct=1",
+            "--unlink=1",
             "--filename=/tmp/lhm_stress_seq.tmp",
             "--output-format=terse",
         ]),
@@ -480,9 +549,10 @@ fn spawn_stress_process(method: StressMethod) -> Result<Child, String> {
             "--rw=randrw",
             "--bs=4k",
             "--size=64M",
-            "--runtime=0",
+            "--runtime=86400",
             "--time_based",
             "--direct=1",
+            "--unlink=1",
             "--filename=/tmp/lhm_stress_rand.tmp",
             "--output-format=terse",
         ]),
@@ -598,6 +668,11 @@ fn read_cpu_freq_mhz() -> Option<f64> {
         }
     }
     if count > 0 { Some(sum / count as f64) } else { None }
+}
+
+fn read_loadavg_1m() -> Option<f64> {
+    let raw = fs::read_to_string("/proc/loadavg").ok()?;
+    raw.split_whitespace().next()?.parse::<f64>().ok()
 }
 
 /// Read RAPL energy counter (package-0). Returns micro-joules.
@@ -728,6 +803,18 @@ pub fn build_stress_page() -> gtk::Box {
         .title(&t("Elapsed"))
         .subtitle("—")
         .build();
+    let cpu_freq_row = adw::ActionRow::builder()
+        .title(&t("CPU Frequency"))
+        .subtitle("—")
+        .build();
+    let mem_row = adw::ActionRow::builder()
+        .title(&t("Available RAM"))
+        .subtitle("—")
+        .build();
+    let load_row = adw::ActionRow::builder()
+        .title(&t("Load Average (1m)"))
+        .subtitle("—")
+        .build();
     let status_row = adw::ActionRow::builder()
         .title(&t("Status"))
         .subtitle(&t("Idle"))
@@ -736,6 +823,9 @@ pub fn build_stress_page() -> gtk::Box {
     status_group.add(&cpu_temp_row);
     status_group.add(&gpu_temp_row);
     status_group.add(&elapsed_row);
+    status_group.add(&cpu_freq_row);
+    status_group.add(&mem_row);
+    status_group.add(&load_row);
     status_group.add(&status_row);
     body.append(&status_group);
 
@@ -786,13 +876,58 @@ pub fn build_stress_page() -> gtk::Box {
         .title(&t("Duration"))
         .subtitle("—")
         .build();
+    let report_method = adw::ActionRow::builder()
+        .title(&t("Method"))
+        .subtitle("—")
+        .build();
+    let report_exit = adw::ActionRow::builder()
+        .title(&t("Exit Reason"))
+        .subtitle("—")
+        .build();
+    let report_peak_freq = adw::ActionRow::builder()
+        .title(&t("Peak CPU Frequency"))
+        .subtitle("—")
+        .build();
+    let report_avg_freq = adw::ActionRow::builder()
+        .title(&t("Average CPU Frequency"))
+        .subtitle("—")
+        .build();
+    let report_mem_start = adw::ActionRow::builder()
+        .title(&t("RAM at Start"))
+        .subtitle("—")
+        .build();
+    let report_mem_end = adw::ActionRow::builder()
+        .title(&t("RAM at End"))
+        .subtitle("—")
+        .build();
+    let report_mem_min = adw::ActionRow::builder()
+        .title(&t("Lowest Available RAM"))
+        .subtitle("—")
+        .build();
+    let report_load = adw::ActionRow::builder()
+        .title(&t("Load Average (1m)"))
+        .subtitle("—")
+        .build();
+    let report_conclusion = adw::ActionRow::builder()
+        .title(&t("Conclusion"))
+        .subtitle("—")
+        .build();
 
+    report_group.add(&report_method);
     report_group.add(&report_peak_cpu);
     report_group.add(&report_peak_gpu);
     report_group.add(&report_throttle);
     report_group.add(&report_energy);
     report_group.add(&report_power);
     report_group.add(&report_duration);
+    report_group.add(&report_peak_freq);
+    report_group.add(&report_avg_freq);
+    report_group.add(&report_mem_start);
+    report_group.add(&report_mem_end);
+    report_group.add(&report_mem_min);
+    report_group.add(&report_load);
+    report_group.add(&report_exit);
+    report_group.add(&report_conclusion);
     body.append(&report_group);
 
     // ── Wire Start button ─────────────────────────────────────────────────
@@ -840,16 +975,34 @@ pub fn build_stress_page() -> gtk::Box {
     let report_energy_s = report_energy.clone();
     let report_power_s = report_power.clone();
     let report_duration_s = report_duration.clone();
+    let report_method_s = report_method.clone();
+    let report_exit_s = report_exit.clone();
+    let report_peak_freq_s = report_peak_freq.clone();
+    let report_avg_freq_s = report_avg_freq.clone();
+    let report_mem_start_s = report_mem_start.clone();
+    let report_mem_end_s = report_mem_end.clone();
+    let report_mem_min_s = report_mem_min.clone();
+    let report_load_s = report_load.clone();
+    let report_conclusion_s = report_conclusion.clone();
 
     stop_btn.connect_clicked(move |_| {
         if let Some(report) = runner_stop.stop() {
             update_report_ui(
+                &report_method_s,
                 &report_peak_cpu_s,
                 &report_peak_gpu_s,
                 &report_throttle_s,
                 &report_energy_s,
                 &report_power_s,
                 &report_duration_s,
+                &report_exit_s,
+                &report_peak_freq_s,
+                &report_avg_freq_s,
+                &report_mem_start_s,
+                &report_mem_end_s,
+                &report_mem_min_s,
+                &report_load_s,
+                &report_conclusion_s,
                 &report,
             );
         }
@@ -865,6 +1018,9 @@ pub fn build_stress_page() -> gtk::Box {
     let cpu_temp_tick = cpu_temp_row.clone();
     let gpu_temp_tick = gpu_temp_row.clone();
     let elapsed_tick = elapsed_row.clone();
+    let cpu_freq_tick = cpu_freq_row.clone();
+    let mem_tick = mem_row.clone();
+    let load_tick = load_row.clone();
     let status_tick = status_row.clone();
     let start_btn_tick = start_btn.clone();
     let stop_btn_tick = stop_btn.clone();
@@ -874,11 +1030,29 @@ pub fn build_stress_page() -> gtk::Box {
     let report_energy_t = report_energy.clone();
     let report_power_t = report_power.clone();
     let report_duration_t = report_duration.clone();
+    let report_method_t = report_method.clone();
+    let report_exit_t = report_exit.clone();
+    let report_peak_freq_t = report_peak_freq.clone();
+    let report_avg_freq_t = report_avg_freq.clone();
+    let report_mem_start_t = report_mem_start.clone();
+    let report_mem_end_t = report_mem_end.clone();
+    let report_mem_min_t = report_mem_min.clone();
+    let report_load_t = report_load.clone();
+    let report_conclusion_t = report_conclusion.clone();
 
     glib::timeout_add_seconds_local(1, move || {
         let (cpu, gpu) = runner_tick.live_temps();
         cpu_temp_tick.set_subtitle(&format!("{cpu:.1} °C"));
         gpu_temp_tick.set_subtitle(&format!("{gpu:.1} °C"));
+        if let Some(freq) = read_cpu_freq_mhz() {
+            cpu_freq_tick.set_subtitle(&format!("{freq:.0} MHz"));
+        }
+        if let Some(mem_kb) = read_meminfo_field("MemAvailable") {
+            mem_tick.set_subtitle(&format!("{} MB", mem_kb / 1024));
+        }
+        if let Some(load_1m) = read_loadavg_1m() {
+            load_tick.set_subtitle(&format!("{load_1m:.2}"));
+        }
 
         if runner_tick.is_running() {
             let elapsed = runner_tick.elapsed_secs();
@@ -891,12 +1065,21 @@ pub fn build_stress_page() -> gtk::Box {
         // Poll for a completed report (natural finish or watchdog kill).
         if let Some(report) = runner_tick.take_pending_report() {
             update_report_ui(
+                &report_method_t,
                 &report_peak_cpu_t,
                 &report_peak_gpu_t,
                 &report_throttle_t,
                 &report_energy_t,
                 &report_power_t,
                 &report_duration_t,
+                &report_exit_t,
+                &report_peak_freq_t,
+                &report_avg_freq_t,
+                &report_mem_start_t,
+                &report_mem_end_t,
+                &report_mem_min_t,
+                &report_load_t,
+                &report_conclusion_t,
                 &report,
             );
             let msg = if report.stopped_by_watchdog {
@@ -920,14 +1103,29 @@ pub fn build_stress_page() -> gtk::Box {
 // ────────────────────────────────────────────────────────────────────────────
 
 fn update_report_ui(
+    method: &adw::ActionRow,
     peak_cpu: &adw::ActionRow,
     peak_gpu: &adw::ActionRow,
     throttle: &adw::ActionRow,
     energy: &adw::ActionRow,
     power: &adw::ActionRow,
     duration: &adw::ActionRow,
+    exit_reason: &adw::ActionRow,
+    peak_freq: &adw::ActionRow,
+    avg_freq: &adw::ActionRow,
+    mem_start: &adw::ActionRow,
+    mem_end: &adw::ActionRow,
+    mem_min: &adw::ActionRow,
+    load: &adw::ActionRow,
+    conclusion: &adw::ActionRow,
     report: &StressReport,
 ) {
+    let method_label = report
+        .method
+        .map(|m| m.label())
+        .unwrap_or_else(|| t("Unknown"));
+    method.set_subtitle(&method_label);
+
     peak_cpu.set_subtitle(&format!("{:.1} °C", report.peak_cpu_temp_c));
     peak_gpu.set_subtitle(&format!("{:.1} °C", report.peak_gpu_temp_c));
 
@@ -953,4 +1151,60 @@ fn update_report_ui(
     let mins = report.duration_secs / 60;
     let secs = report.duration_secs % 60;
     duration.set_subtitle(&format!("{mins}m {secs:02}s"));
+
+    if report.peak_cpu_freq_mhz > 0.0 {
+        peak_freq.set_subtitle(&format!("{:.0} MHz", report.peak_cpu_freq_mhz));
+    } else {
+        peak_freq.set_subtitle(&t("N/A"));
+    }
+
+    if let Some(v) = report.avg_cpu_freq_mhz {
+        avg_freq.set_subtitle(&format!("{v:.0} MHz"));
+    } else {
+        avg_freq.set_subtitle(&t("N/A"));
+    }
+
+    if let Some(v) = report.start_mem_available_mb {
+        mem_start.set_subtitle(&format!("{v} MB"));
+    } else {
+        mem_start.set_subtitle(&t("N/A"));
+    }
+    if let Some(v) = report.end_mem_available_mb {
+        mem_end.set_subtitle(&format!("{v} MB"));
+    } else {
+        mem_end.set_subtitle(&t("N/A"));
+    }
+    if let Some(v) = report.min_mem_available_mb {
+        mem_min.set_subtitle(&format!("{v} MB"));
+    } else {
+        mem_min.set_subtitle(&t("N/A"));
+    }
+
+    if let Some(v) = report.load_avg_1m {
+        load.set_subtitle(&format!("{v:.2}"));
+    } else {
+        load.set_subtitle(&t("N/A"));
+    }
+
+    let reason = if report.stopped_by_watchdog {
+        t("Stopped by watchdog (temperature limit)")
+    } else if report.stopped_manually {
+        t("Stopped manually")
+    } else if let Some(code) = report.exit_code {
+        format!("{} {code}", t("Process exited with code"))
+    } else {
+        t("Process finished")
+    };
+    exit_reason.set_subtitle(&reason);
+
+    let conclusion_text = if report.stopped_by_watchdog {
+        t("Result: FAIL - thermal limit reached during stress.")
+    } else if report.thermal_throttling_detected {
+        t("Result: WARNING - throttling detected, cooling may be insufficient.")
+    } else if report.duration_secs < 10 {
+        t("Result: INCONCLUSIVE - test duration too short.")
+    } else {
+        t("Result: PASS - sustained load completed without thermal protection.")
+    };
+    conclusion.set_subtitle(&conclusion_text);
 }
